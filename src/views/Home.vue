@@ -1,6 +1,7 @@
 <template>
   <el-container>
     <el-header>
+      <img src="../assets/logo.png" />
       <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
         <el-menu-item
           v-for="(childItem,ckey) in defaultRoute[2].children"
