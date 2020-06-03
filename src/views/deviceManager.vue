@@ -1,26 +1,32 @@
 <template>
   <div class="device-manager">
     <div class="tools-wrapper">
-      <el-input placeholder="请输入内容" v-model="searchText" class='search-input'>
+      <el-input placeholder="请输入相关信息进行查询" v-model="searchText" class="search-input">
         <i slot="suffix" class="el-input__icon el-icon-search"></i>
       </el-input>
-      <el-button type="primary" plain>权限设置</el-button>
+      <el-button type="primary" plain icon="el-icon-circle-plus-outline" @click="openPop('add')">新增</el-button>
+      <el-button type="primary" plain icon="el-icon-edit" @click="openPop('change')">修改</el-button>
+      <el-button type="primary" plain icon="el-icon-delete" @click="deleteFunc">删除</el-button>
+      <el-button type="primary" plain icon="el-icon-download" @click="openPop('import')">导入数据</el-button>
+      <el-button type="primary" plain icon="el-icon-circle-check" @click="openPop('binding')">绑定部门</el-button>
+      <el-button type="primary" plain icon="el-icon-circle-close" @click="openPop('untie')">解绑部门</el-button>
+      <el-button type="primary" plain icon="el-icon-camera" @click="openPop('setting')">摄像头设置</el-button>
     </div>
     <div class="table-wrapper">
       <el-table :data="tableData" height="250" border style="width: 100%">
-        <el-table-column prop="number" label="设备号" ></el-table-column>
-        <el-table-column prop="status" label="设备状态" >
-            <template slot-scope="scope">
-                <el-tag size="small" v-if="scope.row.status == 'charging'">充电中</el-tag>
-                <el-tag size="small" type="success" v-if="scope.row.status == 'using'">使用中</el-tag>
-            </template>
+        <el-table-column type="selection" width="55" label="全选"></el-table-column>
+        <el-table-column prop="number" label="设备号"></el-table-column>
+        <el-table-column prop="status" label="状态">
+          <template slot-scope="scope">
+            <el-tag size="small" v-if="scope.row.status == 'charging'">充电中</el-tag>
+            <el-tag size="small" type="success" v-if="scope.row.status == 'using'">使用中</el-tag>
+          </template>
         </el-table-column>
-        <el-table-column prop="date" label="使用时间"></el-table-column>
-        <el-table-column prop="setting" label="摄像头设置">
-            <template slot-scope="scope">
-                <el-button type="primary" size="small" plain>设置</el-button>
-            </template>
-        </el-table-column>
+        <el-table-column prop="number" label="经纬度"></el-table-column>
+        <el-table-column prop="number" label="4G卡号"></el-table-column>
+        <el-table-column prop="number" label="部门"></el-table-column>
+        <el-table-column prop="date" label="使用者"></el-table-column>
+        <el-table-column prop="date" label="员工号"></el-table-column>
       </el-table>
     </div>
     <div class="foot-wrapper">
@@ -34,42 +40,123 @@
         :total="400"
       ></el-pagination>
     </div>
+    <!-- 新增弹窗 -->
+    <Dialog v-if="popVisible" :popData="popData" @popClose="popClose" @getPopData="getPopData" />
   </div>
 </template>
 
 <script>
+import Dialog from "@/components/Dialog.vue";
 export default {
   name: "DeviceManager",
   data() {
     return {
-        searchText:'',
+      searchText: "",
       currentPage: 4,
       tableData: [
         {
           date: "2016-05-03",
           number: "11111",
-          status: 'using',
-          setting:true
+          status: "using",
+          setting: true
         },
         {
           date: "2016-05-03",
           number: "11111",
-          status: 'using',
-          setting:true
+          status: "using",
+          setting: true
         },
         {
           date: "2016-05-03",
           number: "11111",
-          status: 'charging',
-          setting:true
+          status: "charging",
+          setting: true
         }
-      ]
+      ],
+      popVisible: false,
+      popData: {
+        title: "新增",
+        type: "add",
+        formData: {
+          name: "",
+          status: "开启"
+        }
+      }
     };
   },
-  components: {},
+  components: {
+    Dialog
+  },
   created() {},
   mounted() {},
   methods: {
+    //关闭弹窗
+    popClose() {
+      this.popVisible = false;
+    },
+    //弹窗传来数据
+    getPopData(val) {
+      this.popVisible = false;
+      console.log(2323233, val);
+    },
+    //打开弹窗
+    openPop(type) {
+      this.popVisible = true;
+      if (type == "add") {//新增
+        this.popData = {
+          title: "新增",
+          type: type,
+          formData: {
+            name: "",
+            status: 1
+          }
+        };
+      } else if (type == "change") {//修改
+        this.popData = {
+          title: "修改",
+          type: type,
+          formData: {
+            name: "啦啦啦啦啦",
+            status: 0
+          }
+        };
+      }else if (type == "setting") {//摄像头设置
+        this.popData = {
+          title: "摄像头设置",
+          type: type,
+          formData: {
+            name: "啦啦啦啦啦",
+            status: 1,
+            startDate:'',
+            endDate:''
+          }
+        };
+      }
+    },
+    // //确认新增
+    // confirmAdd() {
+
+    // },
+    // //修改
+    // changeFunc() {},
+    //删除
+    deleteFunc() {
+      //删除成功
+      this.$message({
+        message: "删除成功！",
+        type: "success"
+      });
+      //删除失败
+      //this.$message.error('删除失败');
+    },
+    // //导入数据
+    // importFunc() {},
+    // //绑定部门
+    // bindingFunc() {},
+    // //解绑部门
+    // untieFunc() {},
+    // //摄像头设置
+    // settingFunc() {},
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
@@ -87,13 +174,20 @@ export default {
   padding: 20px;
   display: flex;
   flex-direction: column;
+  .fixed {
+    display: flex;
+    justify-content: space-between;
+    .el-form-item {
+      width: 45%;
+    }
+  }
   .tools-wrapper {
     height: 40px;
     display: flex;
-    margin-bottom:30px;
+    margin-bottom: 30px;
     .search-input {
-        width:300px;
-        margin-right:50px
+      width: 300px;
+      margin-right: 50px;
     }
   }
   .table-wrapper {

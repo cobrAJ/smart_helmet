@@ -22,7 +22,9 @@
       </el-menu>
     </el-header>
     <el-container class="home-content">
-      <el-aside width="250px">Aside</el-aside>
+      <el-aside width="250px">
+        <LeftBar :treeData="treeData" @getSelectNode="getSelectNode"></LeftBar>
+      </el-aside>
       <el-main>
         <div class="content-wrapper">
           <router-view />
@@ -34,6 +36,7 @@
 
 <script>
 import defaultRoute from "../router/route_config.js";
+import LeftBar from "@/components/LeftBar.vue"
 export default {
   data() {
     let activeIndex = "mapView";
@@ -45,12 +48,76 @@ export default {
     console.log(activeIndex);
     return {
       defaultRoute,
-      activeIndex
+      activeIndex,
+      treeData: [
+        {
+          label: "一级 1",
+          children: [
+            {
+              label: "二级 1-1",
+              children: [
+                {
+                  label: "三级 1-1-1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: "一级 2",
+          children: [
+            {
+              label: "二级 2-1",
+              children: [
+                {
+                  label: "三级 2-1-1"
+                }
+              ]
+            },
+            {
+              label: "二级 2-2",
+              children: [
+                {
+                  label: "三级 2-2-1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: "一级 3",
+          children: [
+            {
+              label: "二级 3-1",
+              children: [
+                {
+                  label: "三级 3-1-1"
+                }
+              ]
+            },
+            {
+              label: "二级 3-2",
+              children: [
+                {
+                  label: "三级 3-2-1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     };
+  },
+  components: {
+    LeftBar
   },
   methods: {
     linkTo(path) {
       location.hash = "#/home/" + path;
+    },
+    //获取当前选中树节点
+    getSelectNode(val) {
+      console.log('val',val)
     }
   }
 };
@@ -89,6 +156,8 @@ export default {
       border-right: 1px solid #cdcdcd;
       padding: 40px 0;
       height: 100%;
+      background: rgba(30,43,62,0.95);
+      color: #fff;
     }
     .el-main {
       flex: 1;
