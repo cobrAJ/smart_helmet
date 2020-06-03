@@ -13,7 +13,13 @@
       <el-button type="primary" plain icon="el-icon-camera" @click="openPop('setting')">摄像头设置</el-button>
     </div>
     <div class="table-wrapper">
-      <el-table :data="tableData" height="250" border style="width: 100%">
+      <el-table
+        :data="tableData"
+        height="250"
+        border
+        style="width: 100%"
+        @selection-change="handleSelectionChange"
+      >
         <el-table-column type="selection" width="55" label="全选"></el-table-column>
         <el-table-column prop="number" label="设备号"></el-table-column>
         <el-table-column prop="status" label="状态">
@@ -51,6 +57,7 @@ export default {
   name: "DeviceManager",
   data() {
     return {
+      multipleSelection: [],
       searchText: "",
       currentPage: 4,
       tableData: [
@@ -74,14 +81,7 @@ export default {
         }
       ],
       popVisible: false,
-      popData: {
-        title: "新增",
-        type: "add",
-        formData: {
-          name: "",
-          status: "开启"
-        }
-      }
+      popData: {}
     };
   },
   components: {
@@ -90,6 +90,11 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    //表格选择
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      console.log("this.multipleSelection", this.multipleSelection);
+    },
     //关闭弹窗
     popClose() {
       this.popVisible = false;
@@ -101,44 +106,81 @@ export default {
     },
     //打开弹窗
     openPop(type) {
-      this.popVisible = true;
-      if (type == "add") {//新增
-        this.popData = {
-          title: "新增",
-          type: type,
-          formData: {
-            name: "",
-            status: 1
-          }
-        };
-      } else if (type == "change") {//修改
-        this.popData = {
-          title: "修改",
-          type: type,
-          formData: {
-            name: "啦啦啦啦啦",
-            status: 0
-          }
-        };
-      }else if (type == "setting") {//摄像头设置
-        this.popData = {
-          title: "摄像头设置",
-          type: type,
-          formData: {
-            name: "啦啦啦啦啦",
-            status: 1,
-            startDate:'',
-            endDate:''
-          }
-        };
+      if (this.multipleSelection.length == 0 && type != "add") {
+        this.$message({
+          message: "请选择一条记录",
+          type: "warning"
+        });
+      } else if (this.multipleSelection.length > 1 && type != "add") {
+        this.$message({
+          message: "只能选择一条记录",
+          type: "warning"
+        });
+      } else {
+        this.popVisible = true;
+        if (type == "add") {
+          //新增
+          this.popData = {
+            title: "新增",
+            type: type,
+
+            formData: {
+              name: "",
+              status: 1
+            }
+          };
+        } else if (type == "change") {
+          //修改
+          this.popData = {
+            title: "修改",
+            type: type,
+            formData: {
+              name: "啦啦啦啦啦",
+              status: 0
+            }
+          };
+        } else if (type == "binding") {
+          //绑定部门
+          this.popData = {
+            title: "绑定部门",
+            type: type,
+            formData: {
+              name: "啦啦啦啦啦",
+              status: 1,
+              startDate: "",
+              endDate: ""
+            }
+          };
+        } else if (type == "untie") {
+          //解绑部门
+          this.popData = {
+            title: "提示",
+            type: type
+          };
+        } else if (type == "import") {
+          //导入数据
+          this.popData = {
+            title: "导入数据",
+            type: type,
+            formData: {
+              file: "啦啦啦啦啦"
+            }
+          };
+        } else if (type == "setting") {
+          //摄像头设置
+          this.popData = {
+            title: "摄像头设置",
+            type: type,
+            formData: {
+              name: "啦啦啦啦啦",
+              status: 1,
+              startDate: "",
+              endDate: ""
+            }
+          };
+        }
       }
     },
-    // //确认新增
-    // confirmAdd() {
-
-    // },
-    // //修改
-    // changeFunc() {},
     //删除
     deleteFunc() {
       //删除成功
@@ -149,14 +191,6 @@ export default {
       //删除失败
       //this.$message.error('删除失败');
     },
-    // //导入数据
-    // importFunc() {},
-    // //绑定部门
-    // bindingFunc() {},
-    // //解绑部门
-    // untieFunc() {},
-    // //摄像头设置
-    // settingFunc() {},
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
