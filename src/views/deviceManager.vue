@@ -12,11 +12,11 @@
       <el-button type="primary" plain icon="el-icon-circle-close" @click="openPop('untie')">解绑部门</el-button>
       <el-button type="primary" plain icon="el-icon-camera" @click="openPop('setting')">摄像头设置</el-button>
     </div>
-    <div class="table-wrapper">
+    <div class="table-wrapper" ref="tableRef">
       <el-table
         :data="tableData"
-        height="250"
         border
+        :max-height="tableMaxHeight"
         style="width: 100%"
         @selection-change="handleSelectionChange"
       >
@@ -57,10 +57,83 @@ export default {
   name: "DeviceManager",
   data() {
     return {
+      tableMaxHeight: 0,
       multipleSelection: [],
       searchText: "",
       currentPage: 4,
       tableData: [
+        {
+          date: "2016-05-03",
+          number: "11111",
+          status: "using",
+          setting: true
+        },
+        {
+          date: "2016-05-03",
+          number: "11111",
+          status: "using",
+          setting: true
+        },
+        {
+          date: "2016-05-03",
+          number: "11111",
+          status: "charging",
+          setting: true
+        },
+        {
+          date: "2016-05-03",
+          number: "11111",
+          status: "using",
+          setting: true
+        },
+        {
+          date: "2016-05-03",
+          number: "11111",
+          status: "using",
+          setting: true
+        },
+        {
+          date: "2016-05-03",
+          number: "11111",
+          status: "charging",
+          setting: true
+        },
+        {
+          date: "2016-05-03",
+          number: "11111",
+          status: "using",
+          setting: true
+        },
+        {
+          date: "2016-05-03",
+          number: "11111",
+          status: "using",
+          setting: true
+        },
+        {
+          date: "2016-05-03",
+          number: "11111",
+          status: "charging",
+          setting: true
+        },
+        {
+          date: "2016-05-03",
+          number: "11111",
+          status: "using",
+          setting: true
+        },
+        {
+          date: "2016-05-03",
+          number: "11111",
+          status: "using",
+          setting: true
+        },
+        {
+          date: "2016-05-03",
+          number: "11111",
+          status: "charging",
+          setting: true
+        },
         {
           date: "2016-05-03",
           number: "11111",
@@ -88,7 +161,12 @@ export default {
     Dialog
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.$nextTick(() => {
+      // table max-height不支持百分比，采用获取外层div高度赋值
+      this.tableMaxHeight = this.$refs.tableRef.offsetHeight;
+    });
+  },
   methods: {
     //表格选择
     handleSelectionChange(val) {
@@ -183,13 +261,20 @@ export default {
     },
     //删除
     deleteFunc() {
-      //删除成功
-      this.$message({
-        message: "删除成功！",
-        type: "success"
-      });
-      //删除失败
-      //this.$message.error('删除失败');
+      if (this.multipleSelection.length == 0 && type != "add") {
+        this.$message({
+          message: "请选择一条记录",
+          type: "warning"
+        });
+      } else {
+        //删除成功
+        this.$message({
+          message: "删除成功！",
+          type: "success"
+        });
+        //删除失败
+        //this.$message.error('删除失败');
+      }
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);

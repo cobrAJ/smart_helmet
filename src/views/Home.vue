@@ -152,6 +152,7 @@ export default {
     flex: 1;
     display: flex;
     background-color: #f9f9fa;
+    overflow: hidden;
     .el-aside {
       border-right: 1px solid #cdcdcd;
       padding: 40px 0;
@@ -163,11 +164,13 @@ export default {
       flex: 1;
       padding: 20px 20px;
       height: 100%;
+      overflow: hidden;
       .content-wrapper {
         width: 100%;
         height: 100%;
         background-color: #fff;
         border-radius: 20px;
+        overflow: hidden;
       }
     }
   }

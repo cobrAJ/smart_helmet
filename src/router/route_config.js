@@ -32,6 +32,12 @@ let routes = [
         description: "告警管理",
     },
     {
+        path: "organizationManagement",
+        name: "organizationManagement",
+        component: () => import("../views/organizationManagement.vue"),
+        description: "组织管理",
+    },
+    {
         path: "systemManager",
         name: "systemManager",
         component: () => import("../views/systemManager.vue"),
