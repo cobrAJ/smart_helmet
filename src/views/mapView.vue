@@ -23,13 +23,14 @@ export default {
     return {
       mapModel: "",
       helmetPointList: [
-        { lng: 116.362209, lat: 39.887487, type: "normal" },
-        { lng: 116.422897, lat: 39.878002, type: "waring" },
-        { lng: 116.372105, lat: 39.90651, type: "normal" },
-        { lng: 116.428945, lat: 39.89663, type: "normal" }
+        { lng: 116.362209, lat: 39.887487, type: "normal", userid: "1" },
+        { lng: 116.422897, lat: 39.878002, type: "waring", userid: "2" },
+        { lng: 116.372105, lat: 39.90651, type: "normal", userid: "3" },
+        { lng: 116.428945, lat: 39.89663, type: "normal", userid: "4" }
       ],
       infoWindow: "",
-      searchValue: ""
+      searchValue: "",
+      selectDeviceUserid: ""
     };
   },
   methods: {
@@ -52,9 +53,9 @@ export default {
         offset: new AMap.Pixel(-20, 0)
       });
       let that = this;
-      console.log(AMap.Event.addListener);
       AMap.Event.addListener(newMark, "click", function() {
         that.infoWindow.open(that.mapModel, newMark.getPosition());
+        that.selectDeviceUserid = markPoint.userid;
       });
       return newMark;
     },
@@ -68,7 +69,12 @@ export default {
     },
     createInfoWindow() {
       var content =
-        "<ul class='open-tips'><li><div>摄像拍照</div></li><li><div>语音对讲</div></li><li><div>视频对讲</div></li><li><div>紧急报警</div></li><li><div>佩戴人员</div></li></ul>";
+        "<ul class='open-tips'>" +
+        "<li><div><img src='static/camera.png' />摄像拍照</div></li>" +
+        "<li><div><img src='static/mic.png' />语音对讲</div></li>" +
+        "<li><div><img src='static/video.png' />视频对讲</div></li>" +
+        "<li><div><img src='static/light.png' />紧急报警</div></li>" +
+        "<li><div><img src='static/user.png' />佩戴人员</div></li></ul>";
       // 创建 infoWindow 实例
       this.infoWindow = new AMap.InfoWindow({
         content: content //传入 dom 对象，或者 html 字符串
@@ -117,5 +123,15 @@ export default {
   cursor: pointer;
   border-bottom: 1px solid #dddddd;
   padding: 8px 0px;
+}
+
+.open-tips li:hover {
+  background: #dddddd;
+}
+
+.open-tips img {
+  height: 20px;
+  margin-right: 10px;
+  vertical-align: bottom;
 }
 </style>
