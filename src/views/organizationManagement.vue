@@ -14,6 +14,7 @@
         :max-height="tableMaxHeight"
         highlight-current-row
         @current-change="selectRow"
+        :indent="indent"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       >
         <el-table-column prop="id" label width="100">
@@ -53,6 +54,7 @@ export default {
   name: "OrganizationManagement",
   data() {
     return {
+      indent: 0,
       currentRadio: -1,
       tableMaxHeight: 0,
       multipleSelection: [],
