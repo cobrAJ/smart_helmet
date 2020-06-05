@@ -1,8 +1,13 @@
 <template>
   <div class="device-manager organization">
     <div class="tools-wrapper">
-      <el-button type="primary" plain icon="el-icon-circle-plus-outline" @click="openPop('add')">新增</el-button>
-      <el-button type="primary" plain icon="el-icon-edit" @click="openPop('change')">修改</el-button>
+      <el-button
+        type="primary"
+        plain
+        icon="el-icon-circle-plus-outline"
+        @click="openPop('organizationAdd')"
+      >新增</el-button>
+      <el-button type="primary" plain icon="el-icon-edit" @click="openPop('organizationChange')">修改</el-button>
       <el-button type="primary" plain icon="el-icon-delete" @click="deleteFunc">删除</el-button>
     </div>
     <div class="table-wrapper" ref="tableRef">
@@ -54,6 +59,7 @@ export default {
   name: "OrganizationManagement",
   data() {
     return {
+      isSelectRow: false,
       indent: 0,
       currentRadio: -1,
       tableMaxHeight: 0,
@@ -131,36 +137,38 @@ export default {
   methods: {
     //当前选中行
     selectRow(val) {
+      this.isSelectRow = true;
       this.currentRadio = val.id;
     },
     //打开弹窗
     openPop(type) {
-      if (this.multipleSelection.length == 0 && type != "add") {
+      if (!this.isSelectRow && type != "organizationAdd") {
         this.$message({
           message: "请选择一条记录",
           type: "warning"
         });
       } else {
         this.popVisible = true;
-        if (type == "add") {
+        if (type == "organizationAdd") {
           //新增
           this.popData = {
             title: "新增",
             type: type,
-
             formData: {
               name: "",
-              status: 1
+              selected: "",
+              password: ""
             }
           };
-        } else if (type == "change") {
+        } else if (type == "organizationChange") {
           //修改
           this.popData = {
             title: "修改",
             type: type,
             formData: {
               name: "啦啦啦啦啦",
-              status: 0
+              selected: "A",
+              password: ""
             }
           };
         }
@@ -168,7 +176,7 @@ export default {
     },
     //删除
     deleteFunc() {
-      if (this.multipleSelection.length == 0 && type != "add") {
+      if (!this.isSelectRow) {
         this.$message({
           message: "请选择一条记录",
           type: "warning"
@@ -183,11 +191,6 @@ export default {
         //this.$message.error('删除失败');
       }
     },
-    //表格选择
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
-      console.log("this.multipleSelection", this.multipleSelection);
-    },
     //关闭弹窗
     popClose() {
       this.popVisible = false;
@@ -196,17 +199,6 @@ export default {
     getPopData(val) {
       this.popVisible = false;
       console.log(2323233, val);
-    },
-    //导出
-    importFunc() {
-      if (this.multipleSelection.length == 0) {
-        this.$message({
-          message: "请选择至少一条记录导出！",
-          type: "warning"
-        });
-      } else {
-        //导出
-      }
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);

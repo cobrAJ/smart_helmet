@@ -82,6 +82,23 @@
         <a href="###" style="color:#2897ff">点击导出下载模板</a>
       </el-form-item>
     </el-form>
+    <el-form
+      :model="form.formData"
+      v-if="form.type == 'organizationAdd' || form.type == 'organizationChange'"
+    >
+      <el-form-item label="部门名称" label-width="80px">
+        <el-input v-model="form.formData.name" autocomplete="off" placeholder="部门名称"></el-input>
+      </el-form-item>
+      <el-form-item label="上级部门" label-width="80px">
+        <select-tree v-model="selected" :options="options" :props="defaultProps" />
+        <p
+          style="font-size:12px;color:red;line-height: 12px;text-align: left;"
+        >*部门降级后权限会随之降级，无法恢复，请谨慎操作。</p>
+      </el-form-item>
+      <el-form-item label="登陆密码" label-width="80px">
+        <el-input type="password" v-model="form.formData.password" placeholder="登陆密码"></el-input>
+      </el-form-item>
+    </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="gobackFunc">返回</el-button>
       <el-button type="primary" @click="confirmFunc">确 定</el-button>

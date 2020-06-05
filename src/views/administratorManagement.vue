@@ -7,10 +7,6 @@
       <el-button type="primary" plain icon="el-icon-circle-plus-outline" @click="openPop('add')">新增</el-button>
       <el-button type="primary" plain icon="el-icon-edit" @click="openPop('change')">修改</el-button>
       <el-button type="primary" plain icon="el-icon-delete" @click="deleteFunc">删除</el-button>
-      <el-button type="primary" plain icon="el-icon-download" @click="openPop('import')">导入数据</el-button>
-      <el-button type="primary" plain icon="el-icon-circle-check" @click="openPop('binding')">绑定部门</el-button>
-      <el-button type="primary" plain icon="el-icon-circle-close" @click="openPop('untie')">解绑部门</el-button>
-      <el-button type="primary" plain icon="el-icon-camera" @click="openPop('setting')">摄像头设置</el-button>
     </div>
     <div class="table-wrapper" ref="tableRef">
       <el-table
@@ -54,7 +50,7 @@
 <script>
 import Dialog from "@/components/Dialog.vue";
 export default {
-  name: "DeviceManager",
+  name: "AdministratorManagement",
   data() {
     return {
       tableMaxHeight: 0,
@@ -215,45 +211,6 @@ export default {
             formData: {
               name: "啦啦啦啦啦",
               status: 0
-            }
-          };
-        } else if (type == "binding") {
-          //绑定部门
-          this.popData = {
-            title: "绑定部门",
-            type: type,
-            formData: {
-              name: "啦啦啦啦啦",
-              status: 1,
-              startDate: "",
-              endDate: ""
-            }
-          };
-        } else if (type == "untie") {
-          //解绑部门
-          this.popData = {
-            title: "提示",
-            type: type
-          };
-        } else if (type == "import") {
-          //导入数据
-          this.popData = {
-            title: "导入数据",
-            type: type,
-            formData: {
-              file: "啦啦啦啦啦"
-            }
-          };
-        } else if (type == "setting") {
-          //摄像头设置
-          this.popData = {
-            title: "摄像头设置",
-            type: type,
-            formData: {
-              name: "啦啦啦啦啦",
-              status: 1,
-              startDate: "",
-              endDate: ""
             }
           };
         }
