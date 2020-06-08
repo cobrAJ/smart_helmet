@@ -22,48 +22,9 @@
         <el-table-column prop="number" label="使用区域"></el-table-column>
         <el-table-column prop="status" label="使用路线">
           <template slot-scope="scope">
-            <!-- 视频弹出层 begin-->
-            <el-popover
-              v-if="scope.row.status == 'video'"
-              placement="left"
-              width="800"
-              trigger="click"
-            >
-              <video
-                src="http://vjs.zencdn.net/v/oceans.mp4"
-                controls="controls"
-                autoplay
-                height="auto"
-                width="100%"
-              >您的浏览器不支持。</video>
-              <i
-                slot="reference"
-                class="el-icon-camera-solid"
-                style="font-size:20px;color:#409eff"
-                @click="openVideo(scope.row)"
-              ></i>
+            <el-popover placement="left" width="800" trigger="click">
+              <div id="map-view" class="map-view">{{scope.number}}</div>
             </el-popover>
-            <!-- 视频弹出层 end-->
-            <!-- 音频弹出层 begin-->
-            <el-popover
-              v-if="scope.row.status == 'audio'"
-              placement="left"
-              width="330"
-              trigger="click"
-            >
-              <audio
-                src="http://devtest.qiniudn.com/secret base~.mp3"
-                controls="controls"
-                width="100%"
-              ></audio>
-              <i
-                slot="reference"
-                class="el-icon-microphone"
-                style="font-size:20px;color:#409eff"
-                @click="openAudio(scope.row)"
-              ></i>
-            </el-popover>
-            <!-- 音频弹出层 end-->
           </template>
         </el-table-column>
       </el-table>
