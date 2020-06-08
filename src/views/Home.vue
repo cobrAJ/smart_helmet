@@ -142,7 +142,7 @@ export default {
         title: "修改密码",
         type: "changePassword",
         formData: {
-          name: "",
+          name: localStorage.getItem('userName'),
           oldPassword: "",
           password: "",
           confirmPassword: ""

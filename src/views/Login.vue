@@ -55,6 +55,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          localStorage.setItem('userName',this.ruleForm.account);
           this.$router.push({
             path: "/home"
           });
