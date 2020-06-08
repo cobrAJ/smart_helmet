@@ -99,6 +99,50 @@
         <el-input type="password" v-model="form.formData.password" placeholder="登陆密码"></el-input>
       </el-form-item>
     </el-form>
+    <el-form
+      :model="form.formData"
+      v-if="form.type == 'administratorAdd' || form.type == 'administratorChange'"
+    >
+      <el-form-item label="上级部门" label-width="80px">
+        <select-tree v-model="selected" :options="options" :props="defaultProps" />
+      </el-form-item>
+      <el-form-item label="用户名" label-width="80px">
+        <el-input v-model="form.formData.name" autocomplete="off" placeholder="部门名称"></el-input>
+      </el-form-item>
+      <el-form-item label="密码" label-width="80px">
+        <el-input type="password" v-model="form.formData.password" placeholder="登陆密码"></el-input>
+      </el-form-item>
+      <el-form-item label="手机号" label-width="80px">
+        <el-input v-model="form.formData.name" autocomplete="off" placeholder="部门名称"></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱" label-width="80px">
+        <el-input v-model="form.formData.name" autocomplete="off" placeholder="部门名称"></el-input>
+      </el-form-item>
+      <el-form-item label="状态" label-width="80px" style="text-align: left;">
+        <el-radio-group v-model="form.formData.status">
+          <el-radio :label="1">正常</el-radio>
+          <el-radio :label="0">禁用</el-radio>
+        </el-radio-group>
+      </el-form-item>
+    </el-form>
+    <el-form
+      :model="form.formData"
+      v-if="form.type == 'changePassword'"
+    >
+    <el-form-item label="用户名" label-width="80px">
+        <el-input v-model="form.formData.name" disabled autocomplete="off" placeholder="部门名称"></el-input>
+      </el-form-item>
+      <el-form-item label="原密码" label-width="80px">
+        <el-input type="password" v-model="form.formData.oldPassword" placeholder="登陆密码"></el-input>
+      </el-form-item>
+      <el-form-item label="新密码" label-width="80px">
+        <el-input type="password" v-model="form.formData.password" placeholder="登陆密码"></el-input>
+      </el-form-item>
+      <el-form-item label="确认密码" label-width="80px">
+        <el-input type="password" v-model="form.formData.confirmPassword" placeholder="登陆密码"></el-input>
+      </el-form-item>
+      
+    </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="gobackFunc">返回</el-button>
       <el-button type="primary" @click="confirmFunc">确 定</el-button>

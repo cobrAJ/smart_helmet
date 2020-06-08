@@ -4,8 +4,8 @@
       <el-input placeholder="请输入相关信息进行查询" v-model="searchText" class="search-input">
         <i slot="suffix" class="el-input__icon el-icon-search"></i>
       </el-input>
-      <el-button type="primary" plain icon="el-icon-circle-plus-outline" @click="openPop('add')">新增</el-button>
-      <el-button type="primary" plain icon="el-icon-edit" @click="openPop('change')">修改</el-button>
+      <el-button type="primary" plain icon="el-icon-circle-plus-outline" @click="openPop('administratorAdd')">新增</el-button>
+      <el-button type="primary" plain icon="el-icon-edit" @click="openPop('administratorChange')">修改</el-button>
       <el-button type="primary" plain icon="el-icon-delete" @click="deleteFunc">删除</el-button>
     </div>
     <div class="table-wrapper" ref="tableRef">
@@ -16,19 +16,19 @@
         style="width: 100%"
         @selection-change="handleSelectionChange"
       >
+        <el-table-column type="index" :index="indexMethod"></el-table-column>
         <el-table-column type="selection" width="55" label="全选"></el-table-column>
-        <el-table-column prop="number" label="设备号"></el-table-column>
+        <el-table-column prop="number" label="用户名"></el-table-column>
+        <el-table-column prop="number" label="所属部门"></el-table-column>
+        <el-table-column prop="number" label="邮箱"></el-table-column>
+        <el-table-column prop="number" label="手机号"></el-table-column>
         <el-table-column prop="status" label="状态">
           <template slot-scope="scope">
-            <el-tag size="small" v-if="scope.row.status == 'charging'">充电中</el-tag>
-            <el-tag size="small" type="success" v-if="scope.row.status == 'using'">使用中</el-tag>
+            <el-tag size="small" type="success" v-if="scope.row.status == 'charging'">正常</el-tag>
+            <el-tag size="small" type="info" v-if="scope.row.status == 'using'">禁用</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="经纬度"></el-table-column>
-        <el-table-column prop="number" label="4G卡号"></el-table-column>
-        <el-table-column prop="number" label="部门"></el-table-column>
-        <el-table-column prop="date" label="使用者"></el-table-column>
-        <el-table-column prop="date" label="员工号"></el-table-column>
+        <el-table-column prop="number" label="创建时间"></el-table-column>
       </el-table>
     </div>
     <div class="foot-wrapper">
@@ -164,6 +164,9 @@ export default {
     });
   },
   methods: {
+    indexMethod(index) {
+      return index + 1;
+    },
     //表格选择
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -180,30 +183,29 @@ export default {
     },
     //打开弹窗
     openPop(type) {
-      if (this.multipleSelection.length == 0 && type != "add") {
+      if (this.multipleSelection.length == 0 && type != "administratorAdd") {
         this.$message({
           message: "请选择一条记录",
           type: "warning"
         });
-      } else if (this.multipleSelection.length > 1 && type != "add") {
+      } else if (this.multipleSelection.length > 1 && type != "administratorAdd") {
         this.$message({
           message: "只能选择一条记录",
           type: "warning"
         });
       } else {
         this.popVisible = true;
-        if (type == "add") {
+        if (type == "administratorAdd") {
           //新增
           this.popData = {
             title: "新增",
             type: type,
-
             formData: {
               name: "",
               status: 1
             }
           };
-        } else if (type == "change") {
+        } else if (type == "administratorChange") {
           //修改
           this.popData = {
             title: "修改",

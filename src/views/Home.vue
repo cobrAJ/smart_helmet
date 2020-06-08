@@ -20,6 +20,14 @@
           @click="linkTo(childItem.path)"
         >{{childItem.description}}</el-menu-item>
       </el-menu>
+      <div class="header-right">
+        <div @click="changePassword">
+          <i class="el-icon-edit"></i>修改密码
+        </div>
+        <div @click="loginOut">
+          <i class="el-icon-switch-button"></i>退出登录
+        </div>
+      </div>
     </el-header>
     <el-container class="home-content">
       <el-aside width="250px">
@@ -31,12 +39,15 @@
         </div>
       </el-main>
     </el-container>
+    <!-- 修改密码弹窗 -->
+    <Dialog v-if="popVisible" :popData="popData" @popClose="popClose" @getPopData="getPopData" />
   </el-container>
 </template>
 
 <script>
 import defaultRoute from "../router/route_config.js";
-import LeftBar from "@/components/LeftBar.vue"
+import LeftBar from "@/components/LeftBar.vue";
+import Dialog from "@/components/Dialog.vue";
 export default {
   data() {
     let activeIndex = "mapView";
@@ -47,6 +58,8 @@ export default {
     }
     console.log(activeIndex);
     return {
+      popVisible: false,
+      popData: {},
       defaultRoute,
       activeIndex,
       treeData: [
@@ -109,15 +122,45 @@ export default {
     };
   },
   components: {
-    LeftBar
+    LeftBar,
+    Dialog
   },
   methods: {
+    //关闭弹窗
+    popClose() {
+      this.popVisible = false;
+    },
+    //弹窗传来数据
+    getPopData(val) {
+      this.popVisible = false;
+      console.log(2323233, val);
+    },
+    //修改密码弹窗
+    changePassword() {
+      this.popVisible = true;
+      this.popData = {
+        title: "修改密码",
+        type: "changePassword",
+        formData: {
+          name: "",
+          oldPassword: "",
+          password: "",
+          confirmPassword: ""
+        }
+      };
+    },
+    //退出登录
+    loginOut() {
+      this.$router.push({
+        path: "/login"
+      });
+    },
     linkTo(path) {
       location.hash = "#/home/" + path;
     },
     //获取当前选中树节点
     getSelectNode(val) {
-      console.log('val',val)
+      console.log("val", val);
     }
   }
 };
@@ -130,8 +173,22 @@ export default {
   flex-direction: column;
   .home-header {
     position: relative;
+    .header-right {
+      height: 100%;
+      position: absolute;
+      right: 30px;
+      top: 0;
+      z-index: 9;
+      line-height: 60px;
+      color: #fff;
+      font-size: 14px;
+      display: flex;
+      div {
+        margin-left: 15px;
+      }
+    }
     .logo-wrapper {
-      height:100%;
+      height: 100%;
       position: absolute;
       left: 30px;
       top: 0;
@@ -157,7 +214,7 @@ export default {
       border-right: 1px solid #cdcdcd;
       padding: 40px 0;
       height: 100%;
-      background: rgba(30,43,62,0.95);
+      background: rgba(30, 43, 62, 0.95);
       color: #fff;
     }
     .el-main {
