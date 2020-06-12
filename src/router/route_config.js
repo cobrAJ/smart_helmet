@@ -43,12 +43,12 @@ let routes = [
         component: () => import("../views/administratorManagement.vue"),
         description: "管理员管理",
     },
-    {
-        path: "systemManager",
-        name: "systemManager",
-        component: () => import("../views/systemManager.vue"),
-        description: "设置",
-    },
+    // {
+    //     path: "systemManager",
+    //     name: "systemManager",
+    //     component: () => import("../views/systemManager.vue"),
+    //     description: "设置",
+    // },
 ];
 
 let childrenRoute = [];

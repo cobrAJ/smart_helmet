@@ -2,7 +2,7 @@
   <div class="device-manager">
     <div class="tools-wrapper">
       <el-input placeholder="请输入相关信息进行查询" v-model="searchText" class="search-input">
-        <i slot="suffix" class="el-input__icon el-icon-search"></i>
+        <i slot="suffix" class="el-input__icon el-icon-search" @click="searchKeyword"></i>
       </el-input>
       <el-button type="primary" plain icon="el-icon-circle-plus-outline" @click="openPop('add')">新增</el-button>
       <el-button type="primary" plain icon="el-icon-edit" @click="openPop('change')">修改</el-button>
@@ -21,18 +21,20 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" label="全选"></el-table-column>
-        <el-table-column prop="number" label="设备号"></el-table-column>
+        <el-table-column prop="deviceNo" label="设备号"></el-table-column>
         <el-table-column prop="status" label="状态">
           <template slot-scope="scope">
-            <el-tag size="small" v-if="scope.row.status == 'charging'">充电中</el-tag>
-            <el-tag size="small" type="success" v-if="scope.row.status == 'using'">使用中</el-tag>
+            <el-tag size="small" type="success" v-if="scope.row.status == 0">在线</el-tag>
+            <el-tag size="small" v-if="scope.row.status == 1">关机</el-tag>
+            <el-tag size="small" type="warning" v-if="scope.row.status == 2">告警</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="经纬度"></el-table-column>
-        <el-table-column prop="number" label="4G卡号"></el-table-column>
-        <el-table-column prop="number" label="部门"></el-table-column>
-        <el-table-column prop="date" label="使用者"></el-table-column>
-        <el-table-column prop="date" label="员工号"></el-table-column>
+        <el-table-column prop="lng" label="经度"></el-table-column>
+        <el-table-column prop="lat" label="纬度"></el-table-column>
+        <el-table-column prop="fourGNo" label="4G卡号"></el-table-column>
+        <el-table-column prop="deptId" label="部门"></el-table-column>
+        <el-table-column prop="userId" label="使用者"></el-table-column>
+        <el-table-column prop="userId" label="员工号"></el-table-column>
       </el-table>
     </div>
     <div class="foot-wrapper">
@@ -40,10 +42,9 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :page-size="pageSize"
+        layout="total,sizes, prev, pager, next"
+        :total="pageTotal"
       ></el-pagination>
     </div>
     <!-- 新增弹窗 -->
@@ -60,7 +61,9 @@ export default {
       tableMaxHeight: 0,
       multipleSelection: [],
       searchText: "",
-      currentPage: 4,
+      currentPage: 1,
+      pageSize: 10,
+      pageTotal: 100,
       tableData: [
         {
           date: "2016-05-03",
@@ -154,7 +157,33 @@ export default {
         }
       ],
       popVisible: false,
-      popData: {}
+      popData: {},
+      res: {
+        code: 200,
+        data: {
+          current: 1,
+          size: 10,
+          total: 1,
+          records: [
+            {
+              address: "",
+              createTime: "",
+              deptId: 0,
+              deviceEndTime: "",
+              deviceNo: "2",
+              deviceStartTime: "",
+              deviceType: 0,
+              fourGNo: "1",
+              id: 0,
+              lat: 0,
+              lng: 0,
+              status: 0,
+              userId: 0
+            }
+          ]
+        },
+        msg: "success"
+      }
     };
   },
   components: {
@@ -166,8 +195,35 @@ export default {
       // table max-height不支持百分比，采用获取外层div高度赋值
       this.tableMaxHeight = this.$refs.tableRef.offsetHeight;
     });
+    this.getTableList();
   },
   methods: {
+    //关键字搜索
+    searchKeyword() {
+      this.currentPage = 1; 
+      this.pageSize = 10;
+      this.pageTotal = 100;
+      this.getTableList();
+    },
+    //获取表格数据
+    getTableList() {
+      let res = this.res;
+      let that = this;
+      let params = {
+        current: that.currentPage,
+        size: that.pageSize,
+        total: that.pageTotal,
+        keyword: that.searchText
+      };
+      if (res.code == 200) {
+        that.tableData = res.data.records;
+        that.currentPage = res.data.current;
+        that.pageSize = res.data.size;
+        that.pageTotal = res.data.total;
+      } else {
+        that.$message.error(res.msg);
+      }
+    },
     //表格选择
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -181,6 +237,12 @@ export default {
     getPopData(val) {
       this.popVisible = false;
       console.log(2323233, val);
+      if(val.type == 'add') {//新增接口
+
+
+      }else if(val.type == 'change') {//修改接口
+        
+      }
     },
     //打开弹窗
     openPop(type) {
@@ -261,7 +323,7 @@ export default {
     },
     //删除
     deleteFunc() {
-      if (this.multipleSelection.length) {
+      if (this.multipleSelection.length == 0) {
         this.$message({
           message: "请选择一条记录",
           type: "warning"
@@ -274,12 +336,20 @@ export default {
         });
         //删除失败
         //this.$message.error('删除失败');
+        //刷新列表
+        this.getTableList();
       }
     },
+    //切换每页显示条数
     handleSizeChange(val) {
+      this.pageSize = val;
+      this.getTableList();
       console.log(`每页 ${val} 条`);
     },
+    //当前页数
     handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getTableList();
       console.log(`当前页: ${val}`);
     }
   }
