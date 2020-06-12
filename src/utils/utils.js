@@ -1,11 +1,9 @@
 import axios from "axios";
 import $vm from "../main";
 import { Loading } from 'element-ui';
-import roleCtrl from '../utils/RoleCtrl';
 /* basic host&port */
-const baseURL = process.env.VUE_APP_API_URL;//"http://172.24.4.147:9010";//"http://api.meet2cloud.com/telconf";
+const baseURL = "http://47.110.82.39:8081/";
 const loadingInstance = {}
-const specialErrorCode = ["BRG10010", "WEBTOOLSCORE00403", "WEBTOOLSCORE10103"];
 /* 共有请求 */
 const xmlRequest = config => {
   let configInit = {
@@ -74,45 +72,10 @@ const xmlRequest = config => {
     if (response.data.code == "00000") {
       configInit.success(response.data, response);
     } else {
-      if (specialErrorCode.indexOf(response.data.code) != -1) {
-        //多点登录踢出code
-        if (response.data.code == "WEBTOOLSCORE00403") {
-          $vm.$message({
-            type: "error",
-            message: response.data.message
-          });
-          setTimeout(() => {
-            location.href = "/login";
-          }, 2000);
-        } else if (response.data.code == "WEBTOOLSCORE10103") {
-          if (typeof (roleCtrl.getLGInfo()) == "string") {
-            $vm.$message({
-              type: "error",
-              message: response.data.message
-            });
-          } else {
-            let role = roleCtrl.getLGInfo().user.role;
-            $vm.$message({
-              type: "primary",
-              message: "会议已结束"
-            });
-            if (role == "VISITOR") {
-              setTimeout(() => {
-                location.href = "/login";
-              }, 2000);
-            } else {
-              setTimeout(() => {
-                location.href = "/";
-              }, 2000);
-            }
-          }
-        }
-      } else {
-        $vm.$message({
-          type: "error",
-          message: response.data.message
-        });
-      }
+      $vm.$message({
+        type: "error",
+        message: response.data.message
+      });
       configInit.error(response.data, response);
     }
   })

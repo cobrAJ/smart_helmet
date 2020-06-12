@@ -52,6 +52,7 @@
 
 <script>
 import Dialog from "@/components/Dialog.vue";
+import { xmlRequest } from "../utils/utils";
 export default {
   name: "CloudAction",
   data() {
@@ -89,6 +90,7 @@ export default {
   },
   created() {},
   mounted() {
+    this.getTableData();
     this.$nextTick(() => {
       // table max-height不支持百分比，采用获取外层div高度赋值
       this.tableMaxHeight = this.$refs.tableRef.offsetHeight;
@@ -129,6 +131,14 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+    },
+    getTableData() {
+      xmlRequest({
+        url: "/api/hel/log/list",
+        success: data => {
+          this.$set(this._data, "tableData", data);
+        }
+      });
     }
   }
 };
