@@ -2,7 +2,7 @@ import axios from "axios";
 import $vm from "../main";
 import { Loading } from 'element-ui';
 /* basic host&port */
-const baseURL = "http://47.110.82.39:8081/";
+const baseURL = "http://47.110.82.39:8081";
 const loadingInstance = {}
 /* 共有请求 */
 const xmlRequest = config => {
@@ -37,10 +37,11 @@ const xmlRequest = config => {
     url: configInit.baseURL + configInit.url,
     data: JSON.stringify(configInit.data),
     headers: {
-      authorization: token ? token : "",
+      Authorization: token ? token : "",
       'Content-Type': "application/json",
-      device: "PC",
-      appId: cookieCtrl.getCookie('appId')
+      // "Content-Type": "application/x-www-form-urlencoded"
+      // device: "PC",
+      // appId: cookieCtrl.getCookie('appId')
     }
   });
   let uniqueId = parseInt(Math.random() * 10000);
@@ -69,7 +70,7 @@ const xmlRequest = config => {
     });
   }
   axiosModel().then(response => {
-    if (response.data.code == "00000") {
+    if (response.data.code == "200") {
       configInit.success(response.data, response);
     } else {
       $vm.$message({

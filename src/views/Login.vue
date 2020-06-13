@@ -18,10 +18,13 @@
             <el-form-item label="密码" prop="password">
               <el-input type="password" v-model="ruleForm.password"></el-input>
             </el-form-item>
-            <el-form-item label="验证码" prop="verificationCode" class="verification-code">
+            <el-form-item label="记住密码" prop="rememberPassword">
+              <el-checkbox v-model="ruleForm.rememberPassword"></el-checkbox>
+            </el-form-item>
+            <!-- <el-form-item label="验证码" prop="verificationCode" class="verification-code">
               <el-input v-model="ruleForm.verificationCode"></el-input>
               <el-button type="primary" plain @click="getVerificationCode">获取验证码</el-button>
-            </el-form-item>
+            </el-form-item>-->
             <el-form-item>
               <el-button class="login-btn" type="primary" @click="submitForm('ruleForm')">登陆</el-button>
             </el-form-item>
@@ -33,13 +36,15 @@
 </template>
 
 <script>
+import { xmlRequest, sstCtrl, cookieCtrl } from "../utils/utils";
 export default {
   data() {
     return {
       ruleForm: {
         account: "",
         password: "",
-        verificationCode: ""
+        verificationCode: "",
+        rememberPassword: false
       },
       rules: {
         account: [{ required: true, message: "请输入账号", trigger: "blur" }],
@@ -51,14 +56,31 @@ export default {
     };
   },
   methods: {
+    sendData() {
+      xmlRequest({
+        url: "/api/sys/login",
+        data: {
+          username: this.ruleForm.account,
+          password: this.ruleForm.password
+        },
+        success: data => {
+          this.ruleForm.token = data.msg;
+          if (this.ruleForm.rememberPassword) {
+            cookieCtrl.setCookie(location.host, this.ruleForm);
+          } else {
+            sstCtrl.setItem(location.host, this.ruleForm);
+          }
+          this.$router.push({
+            path: "/home/mapView"
+          });
+        }
+      });
+    },
     //登陆
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          localStorage.setItem('userName',this.ruleForm.account);
-          this.$router.push({
-            path: "/home"
-          });
+          this.sendData();
         } else {
           return false;
         }
@@ -114,9 +136,14 @@ export default {
         }
         .login-btn {
           width: 100%;
-          margin-top: 30px;
+          // margin-top: 30px;
           font-size: 16px;
         }
+      }
+    }
+    .content {
+      .el-form-item:nth-child(3) {
+        text-align: left;
       }
     }
   }
