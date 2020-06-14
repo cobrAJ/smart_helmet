@@ -32,18 +32,21 @@ const xmlRequest = config => {
   } else if (cookieInfo) {
     token = cookieInfo.token;
   }
-  let axiosModel = axios.create({
+  let axiosModelObj = {
     method: configInit.method,
     url: configInit.baseURL + configInit.url,
     data: JSON.stringify(configInit.data),
     headers: {
-      Authorization: token ? token : "",
       'Content-Type': "application/json",
       // "Content-Type": "application/x-www-form-urlencoded"
       // device: "PC",
       // appId: cookieCtrl.getCookie('appId')
     }
-  });
+  }
+  if (token) {
+    axiosModelObj.headers.Authorization = token;
+  }
+  let axiosModel = axios.create(axiosModelObj);
   let uniqueId = parseInt(Math.random() * 10000);
   if (configInit.needLoad) {
     axiosModel.interceptors.request.use(config => {
@@ -75,7 +78,7 @@ const xmlRequest = config => {
     } else {
       $vm.$message({
         type: "error",
-        message: response.data.message
+        message: response.data.msg
       });
       configInit.error(response.data, response);
     }
@@ -83,7 +86,7 @@ const xmlRequest = config => {
     .catch(error => {
       $vm.$message({
         type: "error",
-        message: error.message
+        message: error.msg
       });
       configInit.error(error, error);
     });

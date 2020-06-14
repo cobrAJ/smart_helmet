@@ -1,7 +1,15 @@
 <template>
   <div class="log-manager">
     <div class="tools-wrapper">
-      <el-input placeholder="请填写大致位置/编号等进行查询" v-model="searchText" class="search-input">
+      <el-select class="search-type" v-model="selectType">
+        <el-option
+          v-for="item in searchType"
+          :value="item.value"
+          :key="item.value"
+          :label="item.name"
+        ></el-option>
+      </el-select>
+      <el-input placeholder="请填写查询内容" v-model="searchText" class="search-input">
         <i slot="suffix" class="el-input__icon el-icon-search"></i>
       </el-input>
     </div>
@@ -35,11 +43,10 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :current-page="pagesInfo.current"
+        :page-size="pagesInfo.size"
+        layout="total, prev, pager, next, jumper"
+        :total="pagesInfo.total"
       ></el-pagination>
       <!-- 分页 end-->
     </div>
@@ -59,8 +66,17 @@ export default {
     return {
       tableMaxHeight: 0,
       multipleSelection: [],
+      searchType: [
+        { value: "deviceNo", name: "设备号码" },
+        { value: "address", name: "区域" }
+      ],
+      selectType: "deviceNo",
       searchText: "",
-      currentPage: 4,
+      pagesInfo: {
+        current: 1,
+        total: 400,
+        size: 100
+      },
       tableData: [
         {
           date: "2016-05-03",
@@ -133,8 +149,13 @@ export default {
       console.log(`当前页: ${val}`);
     },
     getTableData() {
+      let data = { ...this.pagesInfo };
+      if (this.searchText) {
+        data[this.selectType] = this.searchText;
+      }
       xmlRequest({
         url: "/api/hel/log/list",
+        data,
         success: data => {
           this.$set(this._data, "tableData", data);
         }
@@ -172,6 +193,9 @@ export default {
   }
   .foot-wrapper {
     height: 40px;
+  }
+  .search-type {
+    width: 105px;
   }
 }
 </style>
