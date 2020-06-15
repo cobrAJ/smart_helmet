@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import defaultRoute from "../router/route_config.js";
+import { defaultRoute } from "../router/route_config.js";
 import LeftBar from "@/components/LeftBar.vue";
 import Dialog from "@/components/Dialog.vue";
 export default {
@@ -142,7 +142,7 @@ export default {
         title: "修改密码",
         type: "changePassword",
         formData: {
-          name: localStorage.getItem('userName'),
+          name: localStorage.getItem("userName"),
           oldPassword: "",
           password: "",
           confirmPassword: ""

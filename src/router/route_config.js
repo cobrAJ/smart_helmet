@@ -78,4 +78,4 @@ let defaultRoute = [
     }
 ];
 
-export default defaultRoute;
+export { defaultRoute, childrenRoute };

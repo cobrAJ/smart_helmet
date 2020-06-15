@@ -64,7 +64,7 @@ export default {
           password: this.ruleForm.password
         },
         success: data => {
-          this.ruleForm.token = data.msg;
+          this.ruleForm.token = data.data;
           if (this.ruleForm.rememberPassword) {
             cookieCtrl.setCookie(location.host, this.ruleForm);
           } else {

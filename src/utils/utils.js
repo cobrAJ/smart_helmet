@@ -32,13 +32,17 @@ const xmlRequest = config => {
   } else if (cookieInfo) {
     token = cookieInfo.token;
   }
+  let fd = new FormData();
+  for (let key in configInit.data) {
+    fd.append(key, configInit.data[key]);
+  }
   let axiosModelObj = {
     method: configInit.method,
     url: configInit.baseURL + configInit.url,
-    data: JSON.stringify(configInit.data),
+    data: fd,
     headers: {
-      'Content-Type': "application/json",
-      // "Content-Type": "application/x-www-form-urlencoded"
+      // 'Content-Type': "application/json",
+      "Content-Type": "application/x-www-form-urlencoded"
       // device: "PC",
       // appId: cookieCtrl.getCookie('appId')
     }
