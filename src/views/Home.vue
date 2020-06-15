@@ -48,6 +48,8 @@
 import { defaultRoute } from "../router/route_config.js";
 import LeftBar from "@/components/LeftBar.vue";
 import Dialog from "@/components/Dialog.vue";
+import { sstCtrl, cookieCtrl } from "../utils/utils";
+
 export default {
   data() {
     let activeIndex = "mapView";
@@ -151,6 +153,8 @@ export default {
     },
     //退出登录
     loginOut() {
+      sstCtrl.clearItem(location.host);
+      cookieCtrl.delCookie(location.host);
       this.$router.push({
         path: "/login"
       });
