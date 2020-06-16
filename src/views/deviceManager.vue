@@ -1,8 +1,13 @@
 <template>
   <div class="device-manager">
     <div class="tools-wrapper">
-      <el-input placeholder="请输入相关信息进行查询" v-model="searchText" class="search-input">
-        <i slot="suffix" class="el-input__icon el-icon-search" @click="searchKeyword"></i>
+      <el-input
+        placeholder="请输入相关信息进行查询"
+        v-model="searchText"
+        class="search-input"
+        @keyup.enter.native="getTableList"
+      >
+        <i slot="suffix" class="el-input__icon el-icon-search" @click="getTableList"></i>
       </el-input>
       <el-button type="primary" plain icon="el-icon-circle-plus-outline" @click="openPop('add')">新增</el-button>
       <el-button type="primary" plain icon="el-icon-edit" @click="openPop('change')">修改</el-button>
@@ -41,10 +46,10 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
         layout="total,sizes, prev, pager, next"
-        :total="pageTotal"
+        :current-page="pagesInfo.current"
+        :page-size="pagesInfo.size"
+        :total="pagesInfo.total"
       ></el-pagination>
     </div>
     <!-- 新增弹窗 -->
@@ -54,6 +59,7 @@
 
 <script>
 import Dialog from "@/components/Dialog.vue";
+import { xmlRequest } from "../utils/utils";
 export default {
   name: "DeviceManager",
   data() {
@@ -61,129 +67,14 @@ export default {
       tableMaxHeight: 0,
       multipleSelection: [],
       searchText: "",
-      currentPage: 1,
-      pageSize: 10,
-      pageTotal: 100,
-      tableData: [
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "using",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "using",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "charging",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "using",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "using",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "charging",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "using",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "using",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "charging",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "using",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "using",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "charging",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "using",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "using",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "charging",
-          setting: true
-        }
-      ],
+      pagesInfo: {
+        current: 1,
+        total: 400,
+        size: 10
+      },
+      tableData: [],
       popVisible: false,
-      popData: {},
-      res: {
-        code: 200,
-        data: {
-          current: 1,
-          size: 10,
-          total: 1,
-          records: [
-            {
-              address: "",
-              createTime: "",
-              deptId: 0,
-              deviceEndTime: "",
-              deviceNo: "2",
-              deviceStartTime: "",
-              deviceType: 0,
-              fourGNo: "1",
-              id: 0,
-              lat: 0,
-              lng: 0,
-              status: 0,
-              userId: 0
-            }
-          ]
-        },
-        msg: "success"
-      }
+      popData: {}
     };
   },
   components: {
@@ -198,31 +89,21 @@ export default {
     this.getTableList();
   },
   methods: {
-    //关键字搜索
-    searchKeyword() {
-      this.currentPage = 1; 
-      this.pageSize = 10;
-      this.pageTotal = 100;
-      this.getTableList();
-    },
     //获取表格数据
     getTableList() {
-      let res = this.res;
-      let that = this;
-      let params = {
-        current: that.currentPage,
-        size: that.pageSize,
-        total: that.pageTotal,
-        keyword: that.searchText
-      };
-      if (res.code == 200) {
-        that.tableData = res.data.records;
-        that.currentPage = res.data.current;
-        that.pageSize = res.data.size;
-        that.pageTotal = res.data.total;
-      } else {
-        that.$message.error(res.msg);
+      let data = { ...this.pagesInfo };
+      if (this.searchText) {
+        data.keyword = this.searchText;
       }
+      console.log("data", data);
+      xmlRequest({
+        url: "/api/hel/device/list",
+        data,
+        success: data => {
+          this.pagesInfo.total = data.data.total;
+          this.$set(this._data, "tableData", data.data.reduce);
+        }
+      });
     },
     //表格选择
     handleSelectionChange(val) {
@@ -237,21 +118,28 @@ export default {
     getPopData(val) {
       this.popVisible = false;
       console.log(2323233, val);
-      if(val.type == 'add') {//新增接口
-
-
-      }else if(val.type == 'change') {//修改接口
-        
+      if (val.type == "add") {
+        //新增接口
+      } else if (val.type == "change") {
+        //修改接口
       }
     },
     //打开弹窗
     openPop(type) {
-      if (this.multipleSelection.length == 0 && type != "add") {
+      if (
+        this.multipleSelection.length == 0 &&
+        type != "add" &&
+        type != "import"
+      ) {
         this.$message({
           message: "请选择一条记录",
           type: "warning"
         });
-      } else if (this.multipleSelection.length > 1 && type != "add") {
+      } else if (
+        this.multipleSelection.length > 1 &&
+        type != "add" &&
+        type != "import"
+      ) {
         this.$message({
           message: "只能选择一条记录",
           type: "warning"
@@ -342,13 +230,13 @@ export default {
     },
     //切换每页显示条数
     handleSizeChange(val) {
-      this.pageSize = val;
+      this.pagesInfo.size = val;
       this.getTableList();
       console.log(`每页 ${val} 条`);
     },
     //当前页数
     handleCurrentChange(val) {
-      this.currentPage = val;
+      this.pagesInfo.current = val;
       this.getTableList();
       console.log(`当前页: ${val}`);
     }

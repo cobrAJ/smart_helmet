@@ -1,8 +1,13 @@
 <template>
   <div class="device-manager">
     <div class="tools-wrapper">
-      <el-input placeholder="请输入相关信息进行查询" v-model="searchText" class="search-input">
-        <i slot="suffix" class="el-input__icon el-icon-search"></i>
+      <el-input
+        placeholder="请输入相关信息进行查询"
+        v-model="searchText"
+        class="search-input"
+        @keyup.enter.native="getTableList"
+      >
+        <i slot="suffix" class="el-input__icon el-icon-search" @click="getTableList"></i>
       </el-input>
       <el-button type="primary" plain icon="el-icon-download" @click="importFunc">导出</el-button>
     </div>
@@ -28,11 +33,10 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        layout="total,sizes, prev, pager, next"
+        :current-page="pagesInfo.current"
+        :page-size="pagesInfo.size"
+        :total="pagesInfo.total"
       ></el-pagination>
       <!-- 分页 end-->
     </div>
@@ -45,6 +49,7 @@
 
 <script>
 import Dialog from "@/components/Dialog.vue";
+import { xmlRequest } from "../utils/utils";
 export default {
   name: "WarningManager",
   data() {
@@ -52,7 +57,11 @@ export default {
       tableMaxHeight: 0,
       multipleSelection: [],
       searchText: "",
-      currentPage: 4,
+      pagesInfo: {
+        current: 1,
+        total: 400,
+        size: 10
+      },
       tableData: [
         {
           date: "2016-05-03",
@@ -86,8 +95,25 @@ export default {
       // table max-height不支持百分比，采用获取外层div高度赋值
       this.tableMaxHeight = this.$refs.tableRef.offsetHeight;
     });
+    this.getTableList();
   },
   methods: {
+    //获取表格数据
+    getTableList() {
+      let data = { ...this.pagesInfo };
+      if (this.searchText) {
+        data.keyword = this.searchText;
+      }
+      console.log("data", data);
+      // xmlRequest({
+      //   url: "/api/hel/warning/list",
+      //   data,
+      //   success: data => {
+      //     this.pagesInfo.total = data.data.total;
+      //     this.$set(this._data, "tableData", data.data.reduce);
+      //   }
+      // });
+    },
     //表格选择
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -113,10 +139,16 @@ export default {
         //导出
       }
     },
+    //切换每页显示条数
     handleSizeChange(val) {
+      this.pagesInfo.size = val;
+      this.getTableList();
       console.log(`每页 ${val} 条`);
     },
+    //当前页数
     handleCurrentChange(val) {
+      this.pagesInfo.current = val;
+      this.getTableList();
       console.log(`当前页: ${val}`);
     }
   }

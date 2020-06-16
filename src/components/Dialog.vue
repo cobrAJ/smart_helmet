@@ -59,27 +59,11 @@
     <span v-if="form.type == 'untie'">确定是否解绑部门？</span>
     <el-form :model="form.formData" v-if="form.type == 'import'">
       <el-form-item label="Excel文件" label-width="80px">
-        <el-upload
-          class="upload-demo"
-          drag
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :before-remove="beforeRemove"
-          :limit="1"
-          accept=".xls"
-          :file-list="fileList"
-          :on-exceed="handleExceed"
-          multiple
-        >
-          <i class="el-icon-upload"></i>
-          <div class="el-upload__text">
-            将文件拖到此处，或
-            <em>点击上传</em>
-          </div>
-          <div class="el-upload__tip" slot="tip">只能上传.xls文件</div>
-        </el-upload>
-        <a href="###" style="color:#2897ff">点击导出下载模板</a>
+        <input
+          type="file"
+          @change="importf(this)"
+          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+        />
       </el-form-item>
     </el-form>
     <el-form
@@ -125,11 +109,8 @@
         </el-radio-group>
       </el-form-item>
     </el-form>
-    <el-form
-      :model="form.formData"
-      v-if="form.type == 'changePassword'"
-    >
-    <el-form-item label="用户名" label-width="80px">
+    <el-form :model="form.formData" v-if="form.type == 'changePassword'">
+      <el-form-item label="用户名" label-width="80px">
         <el-input v-model="form.formData.name" disabled autocomplete="off" placeholder="部门名称"></el-input>
       </el-form-item>
       <el-form-item label="原密码" label-width="80px">
@@ -141,7 +122,6 @@
       <el-form-item label="确认密码" label-width="80px">
         <el-input type="password" v-model="form.formData.confirmPassword" placeholder="登陆密码"></el-input>
       </el-form-item>
-      
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="gobackFunc">返回</el-button>
@@ -161,6 +141,7 @@ export default {
   },
   data() {
     return {
+      importExcelList: [],
       fileList: [],
       isVisible: true,
       form: this.popData,
@@ -201,21 +182,71 @@ export default {
   },
   mounted() {},
   methods: {
-    handleRemove(file, fileList) {
-      console.log(111, file, fileList);
-    },
-    handlePreview(file) {
-      console.log(222, file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      );
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
+    //导入excel
+    importf(obj) {
+      let _this = this;
+      let inputDOM = this.$refs.inputer; // 通过DOM取文件数据
+      this.file = event.currentTarget.files[0];
+      var rABS = false; //是否将文件读取为二进制字符串
+      var f = this.file;
+      var reader = new FileReader(); //if (!FileReader.prototype.readAsBinaryString) {
+      FileReader.prototype.readAsBinaryString = function(f) {
+        var binary = "";
+        var rABS = false; //是否将文件读取为二进制字符串
+        var pt = this;
+        var wb; //读取完成的数据
+        var outdata;
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var bytes = new Uint8Array(reader.result);
+          var length = bytes.byteLength;
+          for (var i = 0; i < length; i++) {
+            binary += String.fromCharCode(bytes[i]);
+          }
+          var XLSX = require("xlsx");
+          if (rABS) {
+            wb = XLSX.read(btoa(fixdata(binary)), {
+              //手动转化
+              type: "base64"
+            });
+          } else {
+            wb = XLSX.read(binary, {
+              type: "binary"
+            });
+          } // outdata就是你想要的东西 excel导入的数据
+          outdata = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]); // excel 数据再处理
+          let arr = [];
+          outdata.map(v => {
+            let obj = {};
+            obj.address = v["定位地址"];
+            obj.createTime = v["创建时间"];
+            obj.deptId = v["部门ID"];
+            obj.deviceEndTime = v["结束时间"];
+            obj.deviceNo = v["设备编号"];
+            obj.deviceStartTime = v["开始时间"];
+            obj.deviceType = v["设备类型"];
+            obj.fourGNo = v["4G卡号"];
+            obj.id = v["id"];
+            obj.lat = v["纬度"];
+            obj.lng = v["经度"];
+            obj.status = v["设备状态"];
+            obj.userId = v["使用人ID"];
+            arr.push(obj);
+          });
+          _this.importExcelList = [...arr];
+          console.log(1111, _this.importExcelList);
+          //更新页面数据
+          //_this.reload();
+        };
+
+        reader.readAsArrayBuffer(f);
+      };
+
+      if (rABS) {
+        reader.readAsArrayBuffer(f);
+      } else {
+        reader.readAsBinaryString(f);
+      }
     },
     //返回
     gobackFunc() {
@@ -223,7 +254,12 @@ export default {
     },
     //确定
     confirmFunc() {
-      this.$emit("getPopData", this.form);
+      if (this.importExcelList.length > 0) {
+        //导入excel数据
+        this.$emit("getPopData", this.importExcelList);
+      } else {
+        this.$emit("getPopData", this.form);
+      }
     }
   }
 };
