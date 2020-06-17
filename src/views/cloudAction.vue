@@ -146,6 +146,49 @@ export default {
     this.getTableList();
   },
   methods: {
+    // 导出
+    outExe() {
+      this.$confirm("此操作将导出excel文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.excelData = this.dataList; //你要导出的数据list。
+          this.export2Excel();
+        })
+        .catch(() => {});
+    },
+    export2Excel() {
+      var that = this;
+      require.ensure([], () => {
+        const { export_json_to_excel } = require("../excel/Export2Excel"); //这里必须使用绝对路径
+        const tHeader = [
+          "时间",
+          "地点",
+          "申请人",
+          "通话人",
+          "通话方式(语音、视频)",
+          "通话时间",
+          "通话记录"
+        ]; // 导出的表头名
+        const filterVal = [
+          "number",
+          "number",
+          "number",
+          "number",
+          "number",
+          "number",
+          "number"
+        ]; // 导出的表头字段名
+        const list = that.multipleSelection; //所选表格行数据
+        const data = that.formatJson(filterVal, list);
+        export_json_to_excel(tHeader, data, "云指导excel"); // 导出的表格名称，根据需要自己命名
+      });
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]));
+    },
     //获取表格数据
     getTableList() {
       let data = { ...this.pagesInfo };
@@ -189,6 +232,7 @@ export default {
         });
       } else {
         //导出excel
+        this.outExe();
       }
     },
     //切换每页显示条数
