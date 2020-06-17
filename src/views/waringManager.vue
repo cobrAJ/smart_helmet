@@ -124,14 +124,6 @@ export default {
         const filterVal = ["number", "number", "number", "number"]; // 导出的表头字段名
         const list = that.multipleSelection; //所选表格行数据
         const data = that.formatJson(filterVal, list);
-        // let time1,
-        //   time2 = "";
-        // if (this.start !== "") {
-        //   time1 = that.moment(that.start).format("YYYY-MM-DD");
-        // }
-        // if (this.end !== "") {
-        //   time2 = that.moment(that.end).format("YYYY-MM-DD");
-        // }
         export_json_to_excel(tHeader, data, "告警管理excel"); // 导出的表格名称，根据需要自己命名
       });
     },

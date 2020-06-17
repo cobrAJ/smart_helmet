@@ -2,36 +2,48 @@
   <el-dialog :title="form.title" :visible.sync="isVisible" :before-close="gobackFunc">
     <el-form :model="form.formData" v-if="form.type == 'add' || form.type == 'change'">
       <el-form-item label="设备号" label-width="80px">
-        <el-input v-model="form.formData.name" autocomplete="off" placeholder="设备号"></el-input>
+        <el-input v-model="form.formData.deviceNo" autocomplete="off" placeholder="设备号"></el-input>
       </el-form-item>
       <div class="fixed">
         <el-form-item label="经度" label-width="80px">
-          <el-input v-model="form.formData.name" autocomplete="off" placeholder="经度"></el-input>
+          <el-input v-model="form.formData.lng" autocomplete="off" placeholder="经度"></el-input>
         </el-form-item>
         <el-form-item label="纬度" label-width="80px">
-          <el-input v-model="form.formData.name" autocomplete="off" placeholder="纬度"></el-input>
+          <el-input v-model="form.formData.lat" autocomplete="off" placeholder="纬度"></el-input>
         </el-form-item>
       </div>
+      <el-form-item label="创建时间" label-width="80px" style="text-align: left;">
+        <el-date-picker v-model="form.formData.startDate" type="datetime" placeholder="选择日期时间"></el-date-picker>
+      </el-form-item>
       <el-form-item label="位置" label-width="80px">
-        <el-input v-model="form.formData.name" autocomplete="off" placeholder="输入经纬度自动显示位置"></el-input>
+        <el-input v-model="form.formData.address" autocomplete="off" placeholder="输入经纬度自动显示位置"></el-input>
       </el-form-item>
       <el-form-item label="绑定部门" label-width="80px">
-        <el-input v-model="form.formData.name" autocomplete="off" placeholder="所属部门"></el-input>
+        <el-input v-model="form.formData.deptId" autocomplete="off" placeholder="所属部门"></el-input>
       </el-form-item>
-      <el-form-item label="IMEI" label-width="80px">
-        <el-input v-model="form.formData.name" autocomplete="off" placeholder="输入IMEI"></el-input>
+      <el-form-item label="4G卡号" label-width="80px">
+        <el-input v-model="form.formData.fourGNo" autocomplete="off" placeholder="所属部门"></el-input>
       </el-form-item>
-      <el-form-item label="DEVICEID" label-width="80px">
-        <el-input v-model="form.formData.name" autocomplete="off" placeholder="输入deviceid"></el-input>
+      <el-form-item label="使用人ID" label-width="80px">
+        <el-input v-model="form.formData.userId" autocomplete="off" placeholder="所属部门"></el-input>
       </el-form-item>
-      <el-form-item label="PORT" label-width="80px">
-        <el-input v-model="form.formData.name" autocomplete="off" placeholder="输入port"></el-input>
-      </el-form-item>
-      <el-form-item label="状态" label-width="80px" style="text-align: left;">
+      <el-form-item label="设备状态" label-width="80px" style="text-align: left;">
         <el-radio-group v-model="form.formData.status">
           <el-radio :label="1">开启</el-radio>
           <el-radio :label="0">关闭</el-radio>
         </el-radio-group>
+      </el-form-item>
+      <el-form-item label="设备类型" label-width="80px" style="text-align: left;">
+        <el-radio-group v-model="form.formData.deviceType">
+          <el-radio :label="1">永久开启</el-radio>
+          <el-radio :label="0">时段开启</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="开始时间" v-if="form.formData.deviceType == 1" label-width="80px" style="text-align: left;">
+        <el-date-picker v-model="form.formData.deviceStartTime" type="datetime" placeholder="选择日期时间"></el-date-picker>
+      </el-form-item>
+      <el-form-item label="结束时间" v-if="form.formData.deviceType == 1" label-width="80px" style="text-align: left;">
+        <el-date-picker v-model="form.formData.deviceEndTime" type="datetime" placeholder="选择日期时间"></el-date-picker>
       </el-form-item>
     </el-form>
     <el-form :model="form.formData" v-if="form.type == 'setting'">
