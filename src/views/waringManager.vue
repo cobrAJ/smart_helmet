@@ -98,6 +98,47 @@ export default {
     this.getTableList();
   },
   methods: {
+    // 导出
+    outExe() {
+      this.$confirm("此操作将导出excel文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.excelData = this.dataList; //你要导出的数据list。
+          this.export2Excel();
+        })
+        .catch(() => {});
+    },
+    export2Excel() {
+      var that = this;
+      require.ensure([], () => {
+        const { export_json_to_excel } = require("../excel/Export2Excel"); //这里必须使用绝对路径
+        const tHeader = [
+          "时间",
+          "设备号",
+          "使用人",
+          "告警内容（设备告警/路线告警）"
+        ]; // 导出的表头名
+        const filterVal = ["number", "number", "number", "number"]; // 导出的表头字段名
+        const list = that.multipleSelection; //所选表格行数据
+        const data = that.formatJson(filterVal, list);
+        // let time1,
+        //   time2 = "";
+        // if (this.start !== "") {
+        //   time1 = that.moment(that.start).format("YYYY-MM-DD");
+        // }
+        // if (this.end !== "") {
+        //   time2 = that.moment(that.end).format("YYYY-MM-DD");
+        // }
+        export_json_to_excel(tHeader, data, "告警管理excel"); // 导出的表格名称，根据需要自己命名
+      });
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]));
+    },
+
     //获取表格数据
     getTableList() {
       let data = { ...this.pagesInfo };
@@ -137,6 +178,7 @@ export default {
         });
       } else {
         //导出
+        this.outExe();
       }
     },
     //切换每页显示条数
