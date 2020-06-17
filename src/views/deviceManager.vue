@@ -137,7 +137,7 @@ export default {
     getPopData(val) {
       this.popVisible = false;
       console.log(2323233, val);
-      let data = val;
+      let data = val.formData;
       if (val.type == "add") {
         //新增接口
         xmlRequest({
