@@ -15,6 +15,6 @@ yarn.lock*
 *.njsproj
 *.sln
 *.bak
-*.package-lock.json
+package-lock.json
 *.gitignore
 
