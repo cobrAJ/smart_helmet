@@ -16,7 +16,11 @@
               <el-input v-model="ruleForm.account"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="password">
-              <el-input type="password" v-model="ruleForm.password"></el-input>
+              <el-input
+                type="password"
+                v-model="ruleForm.password"
+                @keydown.enter.native="submitForm('ruleForm')"
+              ></el-input>
             </el-form-item>
             <el-form-item label="记住密码" prop="rememberPassword">
               <el-checkbox v-model="ruleForm.rememberPassword"></el-checkbox>

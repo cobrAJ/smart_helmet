@@ -7,8 +7,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import "./component"
 import './assets/css/common.less'
 import './assets/css/reset.css'
-import Blob from './excel/Blob.js'
-import Export2Excel from './excel/Export2Excel.js'
+// import Blob from './excel/Blob.js'
+// import Export2Excel from './excel/Export2Excel.js'
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

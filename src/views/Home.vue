@@ -48,7 +48,7 @@
 import { defaultRoute } from "../router/route_config.js";
 import LeftBar from "@/components/LeftBar.vue";
 import Dialog from "@/components/Dialog.vue";
-import { sstCtrl, cookieCtrl } from "../utils/utils";
+import { sstCtrl, cookieCtrl, xmlRequest } from "../utils/utils";
 
 export default {
   data() {
@@ -165,7 +165,19 @@ export default {
     //获取当前选中树节点
     getSelectNode(val) {
       console.log("val", val);
+    },
+    //加载组织树
+    getOrgList() {
+      xmlRequest({
+        url: "/api/sys/dept/list",
+        success: data => {
+          // this.$set(this._data, "treeData", data.data);
+        }
+      });
     }
+  },
+  mounted() {
+    this.getOrgList();
   }
 };
 </script>

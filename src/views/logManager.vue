@@ -10,7 +10,7 @@
         ></el-option>
       </el-select>
       <el-input placeholder="请填写查询内容" v-model="searchText" class="search-input">
-        <i slot="suffix" class="el-input__icon el-icon-search"></i>
+        <el-button slot="append" icon="el-icon-search" @click="getTableData"></el-button>
       </el-input>
     </div>
     <div class="table-wrapper" ref="tableRef">
@@ -61,7 +61,7 @@
 import Dialog from "@/components/Dialog.vue";
 import { xmlRequest } from "../utils/utils";
 export default {
-  name: "CloudAction",
+  name: "logManager",
   data() {
     return {
       tableMaxHeight: 0,
@@ -77,26 +77,7 @@ export default {
         total: 400,
         size: 100
       },
-      tableData: [
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "video",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "audio",
-          setting: true
-        },
-        {
-          date: "2016-05-03",
-          number: "11111",
-          status: "audio",
-          setting: true
-        }
-      ],
+      tableData: [],
       popVisible: false,
       popData: {}
     };
@@ -113,10 +94,6 @@ export default {
     });
   },
   methods: {
-    //打开音频
-    openAudio(value) {},
-    //打开视频
-    openVideo(value) {},
     //表格选择
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -157,7 +134,7 @@ export default {
         url: "/api/hel/log/list",
         data,
         success: data => {
-          this.$set(this._data, "tableData", data);
+          this.$set(this._data, "tableData", data.data.records);
         }
       });
     }
