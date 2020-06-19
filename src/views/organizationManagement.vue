@@ -27,23 +27,24 @@
             <el-radio v-model="currentRadio" :label="scope.row.id" text-color="transparent"></el-radio>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="部门ID"></el-table-column>
+        <el-table-column prop="deptId" label="部门ID"></el-table-column>
         <el-table-column prop="name" label="部门名称"></el-table-column>
-        <el-table-column prop="address" label="上级部门"></el-table-column>
+        <el-table-column prop="parentName" label="上级部门"></el-table-column>
       </el-table>
       <!-- 表格 end-->
     </div>
     <div class="foot-wrapper">
       <!-- 分页 begin-->
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
-      ></el-pagination>
+      <div class="foot-wrapper">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          layout="total,sizes, prev, pager, next"
+          :current-page="pagesInfo.current"
+          :page-size="pagesInfo.size"
+          :total="pagesInfo.total"
+        ></el-pagination>
+      </div>
       <!-- 分页 end-->
     </div>
 
@@ -54,72 +55,25 @@
 </template>
 
 <script>
+import { xmlRequest } from "../utils/utils";
 import Dialog from "@/components/Dialog.vue";
 export default {
   name: "OrganizationManagement",
   data() {
     return {
+      selectRowData:{},//选中行
       isSelectRow: false,
       indent: 0,
       currentRadio: -1,
       tableMaxHeight: 0,
       multipleSelection: [],
       searchText: "",
-      currentPage: 4,
-      tableData: [
-        {
-          id: 1,
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          id: 2,
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          id: 3,
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-          children: [
-            {
-              id: 31,
-              date: "2016-05-01",
-              name: "王小虎",
-              address: "上海市普陀区金沙江路 1519 弄",
-              children: [
-                {
-                  id: 311,
-                  date: "2016-05-01",
-                  name: "王小虎",
-                  address: "上海市普陀区金沙江路 1519 弄"
-                },
-                {
-                  id: 312,
-                  date: "2016-05-01",
-                  name: "王小虎",
-                  address: "上海市普陀区金沙江路 1519 弄"
-                }
-              ]
-            },
-            {
-              id: 32,
-              date: "2016-05-01",
-              name: "王小虎",
-              address: "上海市普陀区金沙江路 1519 弄"
-            }
-          ]
-        },
-        {
-          id: 4,
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
-      ],
+      pagesInfo: {
+        current: 1,
+        total: 400,
+        size: 10
+      },
+      tableData: [],
       popVisible: false,
       popData: {}
     };
@@ -154,6 +108,7 @@ export default {
     },
     //当前选中行
     selectRow(val) {
+      this.selectRowData = val;
       this.isSelectRow = true;
       this.currentRadio = val.id;
     },
@@ -172,9 +127,10 @@ export default {
             title: "新增",
             type: type,
             formData: {
+              deptId: 0,
               name: "",
-              selected: "",
-              password: ""
+              parentId: 0,
+              parentName: ""
             }
           };
         } else if (type == "organizationChange") {
@@ -182,30 +138,9 @@ export default {
           this.popData = {
             title: "修改",
             type: type,
-            formData: {
-              name: "啦啦啦啦啦",
-              selected: "A",
-              password: ""
-            }
+            formData: this.multipleSelection[0]
           };
         }
-      }
-    },
-    //删除
-    deleteFunc() {
-      if (!this.isSelectRow) {
-        this.$message({
-          message: "请选择一条记录",
-          type: "warning"
-        });
-      } else {
-        //删除成功
-        this.$message({
-          message: "删除成功！",
-          type: "success"
-        });
-        //删除失败
-        //this.$message.error('删除失败');
       }
     },
     //关闭弹窗
@@ -216,11 +151,71 @@ export default {
     getPopData(val) {
       this.popVisible = false;
       console.log(2323233, val);
+      let data = val.formData;
+      if (val.type == "organizationAdd") {
+        //新增接口
+        xmlRequest({
+          url: "/api/sys/dept/save",
+          data,
+          success: data => {
+            this.$message.success("保存成功");
+            //刷新列表
+            this.getTableList();
+          }
+        });
+      } else if (val.type == "organizationChange") {
+        //修改接口
+        xmlRequest({
+          url: "/api/sys/dept/update",
+          data,
+          success: data => {
+            this.$message.success("修改成功");
+            //刷新列表
+            this.getTableList();
+          }
+        });
+      }
     },
+    //删除
+    deleteFunc() {
+      if (this.multipleSelection.length == 0) {
+        this.$message({
+          message: "请至少选择一条记录",
+          type: "warning"
+        });
+      } else {
+        //删除接口
+        let data = {
+          deptId: this.selectRowData.deptId
+        };
+        xmlRequest({
+          url: "/api/sys/dept/delete",
+          data,
+          success: data => {
+            //删除成功
+            this.$message({
+              message: "删除成功！",
+              type: "success"
+            });
+            //刷新列表
+            this.getTableList();
+          }
+        });
+
+        //删除失败
+        //this.$message.error('删除失败');
+      }
+    },
+    //切换每页显示条数
     handleSizeChange(val) {
+      this.pagesInfo.size = val;
+      this.getTableList();
       console.log(`每页 ${val} 条`);
     },
+    //当前页数
     handleCurrentChange(val) {
+      this.pagesInfo.current = val;
+      this.getTableList();
       console.log(`当前页: ${val}`);
     }
   }
