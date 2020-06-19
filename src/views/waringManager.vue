@@ -21,10 +21,10 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" label="全选"></el-table-column>
-        <el-table-column prop="number" label="时间"></el-table-column>
-        <el-table-column prop="number" label="设备号"></el-table-column>
-        <el-table-column prop="number" label="使用人"></el-table-column>
-        <el-table-column prop="number" :label="'告警内容 \n设备告警/路线告警'"></el-table-column>
+        <el-table-column prop="createTime" label="时间"></el-table-column>
+        <el-table-column prop="deviceId" label="设备号"></el-table-column>
+        <el-table-column prop="userId" label="使用人"></el-table-column>
+        <el-table-column prop="warnContent" :label="'告警内容 \n设备告警/路线告警'"></el-table-column>
       </el-table>
       <!-- 表格 end-->
     </div>
@@ -138,14 +138,14 @@ export default {
         data.keyword = this.searchText;
       }
       console.log("data", data);
-      // xmlRequest({
-      //   url: "/api/hel/warning/list",
-      //   data,
-      //   success: data => {
-      //     this.pagesInfo.total = data.data.total;
-      //     this.$set(this._data, "tableData", data.data.reduce);
-      //   }
-      // });
+      xmlRequest({
+        url: "/api/hel/warning/list",
+        data,
+        success: data => {
+          this.$set(this.pagesInfo, "total", data.data.total);
+          this.$set(this._data, "tableData", data.data.records);
+        }
+      });
     },
     //表格选择
     handleSelectionChange(val) {

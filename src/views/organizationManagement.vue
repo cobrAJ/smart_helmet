@@ -133,8 +133,25 @@ export default {
       // table max-height不支持百分比，采用获取外层div高度赋值
       this.tableMaxHeight = this.$refs.tableRef.offsetHeight;
     });
+    this.getTableList();
   },
   methods: {
+    //获取表格数据
+    getTableList() {
+      let data = { ...this.pagesInfo };
+      if (this.searchText) {
+        data.keyword = this.searchText;
+      }
+      console.log("data", data);
+      xmlRequest({
+        url: "/api/sys/dept/list",
+        data,
+        success: data => {
+          this.$set(this.pagesInfo, "total", data.data.total);
+          this.$set(this._data, "tableData", data.data.records);
+        }
+      });
+    },
     //当前选中行
     selectRow(val) {
       this.isSelectRow = true;

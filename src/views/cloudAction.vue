@@ -21,13 +21,18 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" label="全选"></el-table-column>
-        <el-table-column prop="number" label="时间"></el-table-column>
-        <el-table-column prop="number" label="地点"></el-table-column>
-        <el-table-column prop="number" label="申请人"></el-table-column>
-        <el-table-column prop="number" label="通话人"></el-table-column>
-        <el-table-column prop="number" :label="'通话方式\n(语音、视频)'"></el-table-column>
-        <el-table-column prop="number" label="通话时间"></el-table-column>
-        <el-table-column prop="status" label="通话记录">
+        <el-table-column prop="createTime" label="时间"></el-table-column>
+        <el-table-column prop="address" label="地点"></el-table-column>
+        <el-table-column prop="applyPersonId" label="申请人"></el-table-column>
+        <el-table-column prop="talkPersonId" label="通话人"></el-table-column>
+        <el-table-column prop="callForm" :label="'通话方式\n(语音、视频)'">
+          <template slot-scope="scope">
+            <el-tag size="small" type="success" v-if="scope.row.callForm == 0">音频</el-tag>
+            <el-tag size="small" v-if="scope.row.callForm == 1">视频</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="callDuration" label="通话时间"></el-table-column>
+        <el-table-column prop="callRecord" label="通话记录">
           <template slot-scope="scope">
             <!-- 视频弹出层 begin-->
             <el-popover
@@ -200,8 +205,8 @@ export default {
         url: "/api/hel/record/list",
         data,
         success: data => {
-          this.pagesInfo.total = data.data.total;
-          this.$set(this._data, "tableData", data.data.reduce);
+          this.$set(this.pagesInfo, "total", data.data.total);
+          this.$set(this._data, "tableData", data.data.records);
         }
       });
     },

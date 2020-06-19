@@ -19,13 +19,13 @@
         <el-input v-model="form.formData.address" autocomplete="off" placeholder="输入经纬度自动显示位置"></el-input>
       </el-form-item>
       <el-form-item label="绑定部门" label-width="80px">
-        <el-input v-model="form.formData.deptId" autocomplete="off" placeholder="所属部门"></el-input>
+        <el-input v-model="form.formData.deptId" autocomplete="off" placeholder="绑定部门"></el-input>
       </el-form-item>
       <el-form-item label="4G卡号" label-width="80px">
-        <el-input v-model="form.formData.fourGNo" autocomplete="off" placeholder="所属部门"></el-input>
+        <el-input v-model="form.formData.fourGNo" autocomplete="off" placeholder="4G卡号"></el-input>
       </el-form-item>
       <el-form-item label="使用人ID" label-width="80px">
-        <el-input v-model="form.formData.userId" autocomplete="off" placeholder="所属部门"></el-input>
+        <el-input v-model="form.formData.userId" autocomplete="off" placeholder="使用人ID"></el-input>
       </el-form-item>
       <el-form-item label="设备状态" label-width="80px" style="text-align: left;">
         <el-radio-group v-model="form.formData.status">
@@ -39,11 +39,25 @@
           <el-radio :label="0">时段开启</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="开始时间" v-if="form.formData.deviceType == 1" label-width="80px" style="text-align: left;">
-        <el-date-picker v-model="form.formData.deviceStartTime" type="datetime" placeholder="选择日期时间"></el-date-picker>
+      <el-form-item
+        label="开始时间"
+        v-if="form.formData.deviceType == 1"
+        label-width="80px"
+        style="text-align: left;"
+      >
+        <el-date-picker
+          v-model="form.formData.deviceStartTime"
+          type="datetime"
+          placeholder="选择开始时间"
+        ></el-date-picker>
       </el-form-item>
-      <el-form-item label="结束时间" v-if="form.formData.deviceType == 1" label-width="80px" style="text-align: left;">
-        <el-date-picker v-model="form.formData.deviceEndTime" type="datetime" placeholder="选择日期时间"></el-date-picker>
+      <el-form-item
+        label="结束时间"
+        v-if="form.formData.deviceType == 1"
+        label-width="80px"
+        style="text-align: left;"
+      >
+        <el-date-picker v-model="form.formData.deviceEndTime" type="datetime" placeholder="选择结束时间"></el-date-picker>
       </el-form-item>
     </el-form>
     <el-form :model="form.formData" v-if="form.type == 'setting'">
@@ -86,33 +100,34 @@
         <el-input v-model="form.formData.name" autocomplete="off" placeholder="部门名称"></el-input>
       </el-form-item>
       <el-form-item label="上级部门" label-width="80px">
-        <select-tree v-model="selected" :options="options" :props="defaultProps" />
+        <el-input v-model="form.formData.parentName" autocomplete="off" placeholder="上级部门"></el-input>
+        <!-- <select-tree v-model="selected" :options="options" :props="defaultProps" /> -->
         <p
           style="font-size:12px;color:red;line-height: 12px;text-align: left;"
         >*部门降级后权限会随之降级，无法恢复，请谨慎操作。</p>
       </el-form-item>
-      <el-form-item label="登陆密码" label-width="80px">
+      <!-- <el-form-item label="登陆密码" label-width="80px">
         <el-input type="password" v-model="form.formData.password" placeholder="登陆密码"></el-input>
-      </el-form-item>
+      </el-form-item>-->
     </el-form>
     <el-form
       :model="form.formData"
       v-if="form.type == 'administratorAdd' || form.type == 'administratorChange'"
     >
-      <el-form-item label="上级部门" label-width="80px">
+      <!-- <el-form-item label="上级部门" label-width="80px">
         <select-tree v-model="selected" :options="options" :props="defaultProps" />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="用户名" label-width="80px">
-        <el-input v-model="form.formData.name" autocomplete="off" placeholder="部门名称"></el-input>
+        <el-input v-model="form.formData.username" autocomplete="off" placeholder="部门名称"></el-input>
       </el-form-item>
       <el-form-item label="密码" label-width="80px">
         <el-input type="password" v-model="form.formData.password" placeholder="登陆密码"></el-input>
       </el-form-item>
       <el-form-item label="手机号" label-width="80px">
-        <el-input v-model="form.formData.name" autocomplete="off" placeholder="部门名称"></el-input>
+        <el-input v-model="form.formData.mobile" autocomplete="off" placeholder="手机号"></el-input>
       </el-form-item>
       <el-form-item label="邮箱" label-width="80px">
-        <el-input v-model="form.formData.name" autocomplete="off" placeholder="部门名称"></el-input>
+        <el-input v-model="form.formData.email" autocomplete="off" placeholder="邮箱"></el-input>
       </el-form-item>
       <el-form-item label="状态" label-width="80px" style="text-align: left;">
         <el-radio-group v-model="form.formData.status">

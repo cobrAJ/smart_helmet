@@ -27,8 +27,8 @@
       >
         <el-table-column type="selection" width="55" label="全选"></el-table-column>
         <el-table-column prop="deviceNo" label="设备编号"></el-table-column>
-        <el-table-column prop="address" label="定位地址"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间"></el-table-column>
+        <!-- <el-table-column prop="address" label="定位地址"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间"></el-table-column> -->
         <el-table-column prop="deptId" label="部门ID"></el-table-column>
         <el-table-column prop="lng" label="经度"></el-table-column>
         <el-table-column prop="lat" label="纬度"></el-table-column>
@@ -41,7 +41,7 @@
             <el-tag size="small" type="warning" v-if="scope.row.status == 2">告警</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="deviceType" label="设备类型">
+        <!-- <el-table-column prop="deviceType" label="设备类型">
           <template slot-scope="scope">
             <el-tag size="small" type="success" v-if="scope.row.deviceType == 0">永久开启</el-tag>
             <el-tag size="small" v-if="scope.row.deviceType == 1">时段开启</el-tag>
@@ -58,7 +58,7 @@
             <div v-if="scope.row.deviceType == 0">-</div>
             <div v-else>{{scope.row.deviceEndTime}}</div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
     </div>
     <div class="foot-wrapper">
@@ -119,8 +119,8 @@ export default {
         url: "/api/hel/device/list",
         data,
         success: data => {
-          this.pagesInfo.total = data.data.total;
-          this.$set(this._data, "tableData", data.data.reduce);
+          this.$set(this.pagesInfo, "total", data.data.total);
+          this.$set(this._data, "tableData", data.data.records);
         }
       });
     },
@@ -258,28 +258,33 @@ export default {
     deleteFunc() {
       if (this.multipleSelection.length == 0) {
         this.$message({
-          message: "请选择一条记录",
+          message: "请至少选择一条记录",
           type: "warning"
         });
       } else {
+        let idArr = [];
+        //需要删除的设备id
         this.multipleSelection.forEach(element => {
-          //删除接口
-          let data = {
-            id: element.id
-          };
-          xmlRequest({
-            url: "/api/hel/device/delete",
-            data,
-            success: data => {}
-          });
+          idArr.push(element.id);
         });
-        //删除成功
-        // this.$message({
-        //   message: "删除成功！",
-        //   type: "success"
-        // });
-        //刷新列表
-        this.getTableList();
+        //删除接口
+        let data = {
+          ids: idArr
+        };
+        xmlRequest({
+          url: "/api/hel/device/delete",
+          data,
+          success: data => {
+            //删除成功
+            this.$message({
+              message: "删除成功！",
+              type: "success"
+            });
+            //刷新列表
+            this.getTableList();
+          }
+        });
+
         //删除失败
         //this.$message.error('删除失败');
       }
