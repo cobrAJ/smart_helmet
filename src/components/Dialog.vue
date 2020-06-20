@@ -103,7 +103,7 @@
         <el-input v-model="form.formData.parentName" autocomplete="off" placeholder="上级部门"></el-input>
         <!-- <select-tree v-model="selected" :options="options" :props="defaultProps" /> -->
         <p
-          style="font-size:12px;color:red;line-height: 12px;text-align: left;"
+          style="font-size:12px;color:red;line-height: 12px;text-align: left;margin-top:5px"
         >*部门降级后权限会随之降级，无法恢复，请谨慎操作。</p>
       </el-form-item>
       <!-- <el-form-item label="登陆密码" label-width="80px">

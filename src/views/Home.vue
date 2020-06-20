@@ -1,25 +1,27 @@
 <template>
   <el-container class="home">
     <el-header class="home-header">
-      <div class="logo-wrapper">
-        <img src="../assets/logo.png" />
-        <span>智能头盔管理平台</span>
+      <div>
+        <div class="logo-wrapper">
+          <img src="../assets/logo.png" />
+          <span>智能头盔管理平台</span>
+        </div>
+        <el-menu
+          :default-active="activeIndex"
+          background-color="#1e2b3e"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+          class="el-menu-demo"
+          mode="horizontal"
+        >
+          <el-menu-item
+            v-for="(childItem,ckey) in defaultRoute[2].children"
+            :key="ckey"
+            :index="childItem.path"
+            @click="linkTo(childItem.path)"
+          >{{childItem.description}}</el-menu-item>
+        </el-menu>
       </div>
-      <el-menu
-        :default-active="activeIndex"
-        background-color="#1e2b3e"
-        text-color="#fff"
-        active-text-color="#ffd04b"
-        class="el-menu-demo"
-        mode="horizontal"
-      >
-        <el-menu-item
-          v-for="(childItem,ckey) in defaultRoute[2].children"
-          :key="ckey"
-          :index="childItem.path"
-          @click="linkTo(childItem.path)"
-        >{{childItem.description}}</el-menu-item>
-      </el-menu>
       <div class="header-right">
         <div @click="changePassword">
           <i class="el-icon-edit"></i>修改密码
@@ -189,12 +191,17 @@ export default {
   flex-direction: column;
   .home-header {
     position: relative;
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(30, 43, 62);
+    width: 100%;
     .header-right {
       height: 100%;
-      position: absolute;
-      right: 30px;
-      top: 0;
-      z-index: 9;
+      // position: absolute;
+      // right: 30px;
+      // top: 0;
+      padding-right: 30px;
+      // z-index: 9;
       line-height: 60px;
       color: #fff;
       font-size: 14px;
