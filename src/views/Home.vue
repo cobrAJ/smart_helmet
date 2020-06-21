@@ -60,7 +60,7 @@ export default {
     if (location.hash.split("/").length > 2 && tmp) {
       activeIndex = tmp;
     }
-    console.log(activeIndex);
+    // console.log(activeIndex);
     return {
       popVisible: false,
       popData: {},
@@ -137,7 +137,7 @@ export default {
     //弹窗传来数据
     getPopData(val) {
       this.popVisible = false;
-      console.log(2323233, val);
+      // console.log(2323233, val);
     },
     //修改密码弹窗
     changePassword() {
@@ -166,7 +166,7 @@ export default {
     },
     //获取当前选中树节点
     getSelectNode(val) {
-      console.log("val", val);
+      // console.log("val", val);
     },
     //加载组织树
     getOrgList() {

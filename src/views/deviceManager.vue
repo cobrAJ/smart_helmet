@@ -28,7 +28,7 @@
         <el-table-column type="selection" width="55" label="全选"></el-table-column>
         <el-table-column prop="deviceNo" label="设备编号"></el-table-column>
         <!-- <el-table-column prop="address" label="定位地址"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间"></el-table-column> -->
+        <el-table-column prop="createTime" label="创建时间"></el-table-column>-->
         <el-table-column prop="deptId" label="部门ID"></el-table-column>
         <el-table-column prop="lng" label="经度"></el-table-column>
         <el-table-column prop="lat" label="纬度"></el-table-column>
@@ -58,7 +58,7 @@
             <div v-if="scope.row.deviceType == 0">-</div>
             <div v-else>{{scope.row.deviceEndTime}}</div>
           </template>
-        </el-table-column> -->
+        </el-table-column>-->
       </el-table>
     </div>
     <div class="foot-wrapper">
@@ -114,7 +114,7 @@ export default {
       if (this.searchText) {
         data.keyword = this.searchText;
       }
-      console.log("data", data);
+      // console.log("data", data);
       xmlRequest({
         url: "/api/hel/device/list",
         data,
@@ -127,7 +127,7 @@ export default {
     //表格选择
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log("this.multipleSelection", this.multipleSelection);
+      // console.log("this.multipleSelection", this.multipleSelection);
     },
     //关闭弹窗
     popClose() {
@@ -136,7 +136,7 @@ export default {
     //弹窗传来数据
     getPopData(val) {
       this.popVisible = false;
-      console.log(2323233, val);
+      // console.log(2323233, val);
       let data = val.formData;
       if (val.type == "add") {
         //新增接口
@@ -293,13 +293,13 @@ export default {
     handleSizeChange(val) {
       this.pagesInfo.size = val;
       this.getTableList();
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
     },
     //当前页数
     handleCurrentChange(val) {
       this.pagesInfo.current = val;
       this.getTableList();
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
     }
   }
 };

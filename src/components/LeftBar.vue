@@ -29,7 +29,7 @@ export default {
 
   methods: {
     handleNodeClick(data) {
-      console.log(data);
+      // console.log(data);
       this.$emit("getSelectNode", data);
     }
   }

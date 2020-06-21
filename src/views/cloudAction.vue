@@ -63,11 +63,8 @@
               width="330"
               trigger="click"
             >
-              <audio
-                src="http://devtest.qiniudn.com/secret base~.mp3"
-                controls="controls"
-                width="100%"
-              ></audio>
+              <!-- http://devtest.qiniudn.com/secret base~.mp3 -->
+              <audio src controls="controls" width="100%"></audio>
               <i
                 slot="reference"
                 class="el-icon-microphone"
@@ -200,7 +197,7 @@ export default {
       if (this.searchText) {
         data.keyword = this.searchText;
       }
-      console.log("data", data);
+      // console.log("data", data);
       xmlRequest({
         url: "/api/hel/record/list",
         data,
@@ -217,7 +214,7 @@ export default {
     //表格选择
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log("this.multipleSelection", this.multipleSelection);
+      // console.log("this.multipleSelection", this.multipleSelection);
     },
     //关闭弹窗
     popClose() {
@@ -226,7 +223,7 @@ export default {
     //弹窗传来数据
     getPopData(val) {
       this.popVisible = false;
-      console.log(2323233, val);
+      // console.log(2323233, val);
     },
     //导出
     importFunc() {
@@ -244,7 +241,7 @@ export default {
     handleSizeChange(val) {
       this.pagesInfo.size = val;
       this.getTableList();
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
     },
     //当前页数
     handleCurrentChange(val) {

@@ -61,7 +61,7 @@ export default {
   name: "OrganizationManagement",
   data() {
     return {
-      selectRowData:{},//选中行
+      selectRowData: {}, //选中行
       isSelectRow: false,
       indent: 0,
       currentRadio: -1,
@@ -96,7 +96,7 @@ export default {
       if (this.searchText) {
         data.keyword = this.searchText;
       }
-      console.log("data", data);
+      // console.log("data", data);
       xmlRequest({
         url: "/api/sys/dept/list",
         data,
@@ -150,7 +150,7 @@ export default {
     //弹窗传来数据
     getPopData(val) {
       this.popVisible = false;
-      console.log(2323233, val);
+      // console.log(2323233, val);
       let data = val.formData;
       if (val.type == "organizationAdd") {
         //新增接口
@@ -210,13 +210,13 @@ export default {
     handleSizeChange(val) {
       this.pagesInfo.size = val;
       this.getTableList();
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
     },
     //当前页数
     handleCurrentChange(val) {
       this.pagesInfo.current = val;
       this.getTableList();
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
     }
   }
 };

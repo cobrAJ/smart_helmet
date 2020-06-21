@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="form.title" :visible.sync="isVisible" :before-close="gobackFunc">
+  <el-dialog :title="form.title" :visible="isVisible" :before-close="closeDialog">
     <el-form :model="form.formData" v-if="form.type == 'add' || form.type == 'change'">
       <el-form-item label="设备号" label-width="80px">
         <el-input v-model="form.formData.deviceNo" autocomplete="off" placeholder="设备号"></el-input>
@@ -137,9 +137,9 @@
       </el-form-item>
     </el-form>
     <el-form :model="form.formData" v-if="form.type == 'changePassword'">
-      <el-form-item label="用户名" label-width="80px">
+      <!-- <el-form-item label="用户名" label-width="80px">
         <el-input v-model="form.formData.name" disabled autocomplete="off" placeholder="部门名称"></el-input>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="原密码" label-width="80px">
         <el-input type="password" v-model="form.formData.oldPassword" placeholder="登陆密码"></el-input>
       </el-form-item>
@@ -151,7 +151,7 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="gobackFunc">返回</el-button>
+      <el-button @click="closeDialog">返回</el-button>
       <el-button type="primary" @click="confirmFunc">确 定</el-button>
     </div>
   </el-dialog>
@@ -159,6 +159,7 @@
 
 <script>
 import SelectTree from "./SelectTree.vue";
+import { xmlRequest, sstCtrl, cookieCtrl } from "../utils/utils";
 export default {
   name: "Dialog",
   props: {
@@ -171,6 +172,7 @@ export default {
       importExcelList: [],
       fileList: [],
       isVisible: true,
+      hasError: false,
       form: this.popData,
       // 默认选中值
       selected: "A",
@@ -261,7 +263,7 @@ export default {
             arr.push(obj);
           });
           _this.importExcelList = [...arr];
-          console.log(1111, _this.importExcelList);
+          // console.log(1111, _this.importExcelList);
           //更新页面数据
           //_this.reload();
         };
@@ -275,17 +277,68 @@ export default {
         reader.readAsBinaryString(f);
       }
     },
+    //修改登陆密码
+    changePassword() {
+      this.hasError = true;
+      if (
+        this.form.formData.oldPassword ==
+          sstCtrl.getItem(location.host).password ||
+        this.form.formData.oldPassword ==
+          cookieCtrl.getCookie(location.host).password
+      ) {
+        if (this.form.formData.confirmPassword == this.form.formData.password) {
+          this.hasError = false;
+          let data = {
+            newPassword: this.form.formData.confirmPassword,
+            password: this.form.formData.oldPassword
+          };
+          xmlRequest({
+            url: "/api/sys/user/password",
+            data,
+            success: data => {
+              this.$message({
+                type: "success",
+                message: "密码重置成功,请重新登陆"
+              });
+              this.closeDialog();
+              setTimeout(() => {
+                this.$router.push("/login");
+              }, 3000);
+            }
+          });
+        } else {
+          this.$message({
+            type: "error",
+            message: "新密码两次输入不一致"
+          });
+        }
+      } else {
+        this.$message({
+          type: "error",
+          message: "旧密码不正确"
+        });
+      }
+    },
+    closeDialog() {
+      if (!this.hasError) {
+        this.gobackFunc();
+      }
+    },
     //返回
     gobackFunc() {
       this.$emit("popClose", true);
     },
     //确定
     confirmFunc() {
-      if (this.importExcelList.length > 0) {
-        //导入excel数据
-        this.$emit("getPopData", this.importExcelList);
+      if (this.form.type == "changePassword") {
+        this.changePassword();
       } else {
-        this.$emit("getPopData", this.form);
+        if (this.importExcelList.length > 0) {
+          //导入excel数据
+          this.$emit("getPopData", this.importExcelList);
+        } else {
+          this.$emit("getPopData", this.form);
+        }
       }
     }
   }

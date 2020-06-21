@@ -137,7 +137,7 @@ export default {
       if (this.searchText) {
         data.keyword = this.searchText;
       }
-      console.log("data", data);
+      // console.log("data", data);
       xmlRequest({
         url: "/api/hel/warning/list",
         data,
@@ -150,7 +150,7 @@ export default {
     //表格选择
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log("this.multipleSelection", this.multipleSelection);
+      // console.log("this.multipleSelection", this.multipleSelection);
     },
     //关闭弹窗
     popClose() {
@@ -159,7 +159,7 @@ export default {
     //弹窗传来数据
     getPopData(val) {
       this.popVisible = false;
-      console.log(2323233, val);
+      // console.log(2323233, val);
     },
     //导出
     importFunc() {
@@ -177,13 +177,13 @@ export default {
     handleSizeChange(val) {
       this.pagesInfo.size = val;
       this.getTableList();
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
     },
     //当前页数
     handleCurrentChange(val) {
       this.pagesInfo.current = val;
       this.getTableList();
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
     }
   }
 };

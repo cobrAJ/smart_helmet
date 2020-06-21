@@ -1,6 +1,7 @@
 import axios from "axios";
 import $vm from "../main";
 import { Loading } from 'element-ui';
+
 /* basic host&port */
 const baseURL = "http://47.110.82.39:8081";
 const loadingInstance = {}
@@ -80,11 +81,17 @@ const xmlRequest = config => {
     if (response.data.code == "200") {
       configInit.success(response.data, response);
     } else {
+      if (response.data.code == "401" && $vm.$route.path != "/login") {
+        $vm.$router.push("/login")
+      }
       $vm.$message({
         type: "error",
         message: response.data.msg
       });
       configInit.error(response.data, response);
+      if (response.data.code == "401") {
+
+      }
     }
   })
     .catch(error => {
