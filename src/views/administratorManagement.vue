@@ -1,8 +1,13 @@
 <template>
   <div class="device-manager">
     <div class="tools-wrapper">
-      <el-input placeholder="请输入相关信息进行查询" v-model="searchText" class="search-input">
-        <i slot="suffix" class="el-input__icon el-icon-search"></i>
+      <el-input
+        placeholder="请输入相关信息进行查询"
+        v-model="searchText"
+        class="search-input"
+        @keyup.enter.native="getTableList"
+      >
+        <i slot="suffix" class="el-input__icon el-icon-search" @click="getTableList"></i>
       </el-input>
       <el-button
         type="primary"
@@ -89,7 +94,6 @@ export default {
       if (this.searchText) {
         data.keyword = this.searchText;
       }
-      // console.log("data", data);
       xmlRequest({
         url: "/api/sys/user/list",
         data,

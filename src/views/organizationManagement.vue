@@ -90,6 +90,52 @@ export default {
     this.getTableList();
   },
   methods: {
+    //转换成树状结构所需要的data格式
+    toTree(objects, keyName, parentKeyName) {
+      if (!keyName) {
+        throw "keyName argument is required";
+      }
+      if (!parentKeyName) {
+        throw "parentKeyName argument is required";
+      }
+
+      // 列表项字典 将数组变成以objectId分组的对象，类似于{Vvwkeujpo:{},Rohdsfdofj:{}}
+      var map = {};
+      objects.forEach(x => (map[x[keyName]] = Object.assign({}, x)));
+
+      // 已添加到父项的键
+      var pushed = {};
+
+      // 遍历列表项，将子项添加到父项的 children 数组
+      for (const key in map) {
+        if (map.hasOwnProperty(key)) {
+          // 这样就可以过滤掉原型链上的可枚举属性了
+          const x = map[key];
+          if (x && x[keyName] && x[parentKeyName]) {
+            var parent = map[x[parentKeyName]];
+            if (parent) {
+              if (!parent.children) {
+                parent.children = [];
+              }
+              parent.children.push(x);
+              pushed[x[keyName]] = true;
+            }
+          }
+        }
+      }
+
+      // 排除已添加到父项的项得到树
+      var tree = [];
+      for (const key in map) {
+        if (map.hasOwnProperty(key)) {
+          const x = map[key];
+          if (!pushed[x[keyName]]) {
+            tree.push(x);
+          }
+        }
+      }
+      return tree;
+    },
     //获取表格数据
     getTableList() {
       let data = { ...this.pagesInfo };
@@ -102,7 +148,11 @@ export default {
         data,
         success: data => {
           this.$set(this.pagesInfo, "total", data.data.total);
-          this.$set(this._data, "tableData", data.data.records);
+          this.$set(
+            this._data,
+            "tableData",
+            this.toTree(data.data.records, "deptId", "parentId")
+          );
         }
       });
     },
