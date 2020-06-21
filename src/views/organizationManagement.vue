@@ -98,14 +98,11 @@ export default {
       if (!parentKeyName) {
         throw "parentKeyName argument is required";
       }
-
       // 列表项字典 将数组变成以objectId分组的对象，类似于{Vvwkeujpo:{},Rohdsfdofj:{}}
       var map = {};
       objects.forEach(x => (map[x[keyName]] = Object.assign({}, x)));
-
       // 已添加到父项的键
       var pushed = {};
-
       // 遍历列表项，将子项添加到父项的 children 数组
       for (const key in map) {
         if (map.hasOwnProperty(key)) {
@@ -142,12 +139,12 @@ export default {
       if (this.searchText) {
         data.keyword = this.searchText;
       }
-      // console.log("data", data);
       xmlRequest({
         url: "/api/sys/dept/list",
         data,
         success: data => {
           this.$set(this.pagesInfo, "total", data.data.total);
+          //树形数据组装
           this.$set(
             this._data,
             "tableData",
