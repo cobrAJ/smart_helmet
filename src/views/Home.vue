@@ -1,6 +1,6 @@
 <template>
   <el-container class="home">
-    <el-header class="home-header">
+    <el-header v-if="this.$route.path != '/home/mapView'" class="home-header">
       <div>
         <div class="logo-wrapper">
           <img src="../assets/logo.png" />
@@ -32,8 +32,8 @@
       </div>
     </el-header>
     <el-container class="home-content">
-      <el-aside width="250px">
-        <LeftBar :treeData="treeData" @getSelectNode="getSelectNode"></LeftBar>
+      <el-aside v-if="this.$route.path != '/home/mapView'" width="250px">
+        <LeftBar v-if="treeData.length != 0" :treeData="treeData" @getSelectNode="getSelectNode"></LeftBar>
       </el-aside>
       <el-main>
         <div class="content-wrapper">
@@ -67,61 +67,61 @@ export default {
       defaultRoute,
       activeIndex,
       treeData: [
-        {
-          label: "一级 1",
-          children: [
-            {
-              label: "二级 1-1",
-              children: [
-                {
-                  label: "三级 1-1-1"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: "一级 2",
-          children: [
-            {
-              label: "二级 2-1",
-              children: [
-                {
-                  label: "三级 2-1-1"
-                }
-              ]
-            },
-            {
-              label: "二级 2-2",
-              children: [
-                {
-                  label: "三级 2-2-1"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: "一级 3",
-          children: [
-            {
-              label: "二级 3-1",
-              children: [
-                {
-                  label: "三级 3-1-1"
-                }
-              ]
-            },
-            {
-              label: "二级 3-2",
-              children: [
-                {
-                  label: "三级 3-2-1"
-                }
-              ]
-            }
-          ]
-        }
+        // {
+        //   label: "一级 1",
+        //   children: [
+        //     {
+        //       label: "二级 1-1",
+        //       children: [
+        //         {
+        //           label: "三级 1-1-1"
+        //         }
+        //       ]
+        //     }
+        //   ]
+        // },
+        // {
+        //   label: "一级 2",
+        //   children: [
+        //     {
+        //       label: "二级 2-1",
+        //       children: [
+        //         {
+        //           label: "三级 2-1-1"
+        //         }
+        //       ]
+        //     },
+        //     {
+        //       label: "二级 2-2",
+        //       children: [
+        //         {
+        //           label: "三级 2-2-1"
+        //         }
+        //       ]
+        //     }
+        //   ]
+        // },
+        // {
+        //   label: "一级 3",
+        //   children: [
+        //     {
+        //       label: "二级 3-1",
+        //       children: [
+        //         {
+        //           label: "三级 3-1-1"
+        //         }
+        //       ]
+        //     },
+        //     {
+        //       label: "二级 3-2",
+        //       children: [
+        //         {
+        //           label: "三级 3-2-1"
+        //         }
+        //       ]
+        //     }
+        //   ]
+        // }
       ]
     };
   },
@@ -173,7 +173,11 @@ export default {
       xmlRequest({
         url: "/api/sys/dept/list",
         success: data => {
-          // this.$set(this._data, "treeData", data.data);
+          this.$set(this._data, "treeData", data);
+        },
+        error: e => {
+          console.log(e);
+          this.$set(this._data, "treeData", e);
         }
       });
     }

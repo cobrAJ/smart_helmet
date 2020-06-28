@@ -22,7 +22,7 @@ export default {
       highlightStatus: true,
       defaultProps: {
         children: "children",
-        label: "label"
+        label: "name"
       }
     };
   },

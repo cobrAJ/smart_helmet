@@ -5,7 +5,11 @@
 </template>
 
 <script>
-import { defaultRoute, childrenRoute } from "./router/route_config.js";
+import {
+  defaultRoute,
+  childrenRoute,
+  nextChildrenRoute
+} from "./router/route_config.js";
 import route from "./router/";
 import { sstCtrl, cookieCtrl } from "./utils/utils";
 import $vm from "./main";
@@ -16,12 +20,15 @@ route.beforeEach((to, from, next) => {
   let sstLogin = sstCtrl.getItem(location.host) || false;
   let cookieLogin = cookieCtrl.getCookie(location.host) || false;
   if (sstLogin || cookieLogin) {
-    if (to.name) {
+    if (to.path) {
       /* to.name判断是一级路由有无声明  */
       if (to.name == "login" || to.name == "404") {
         next();
       } else {
-        if (childrenRoute.filter(item => item.name == to.name).length != 0) {
+        if (
+          childrenRoute.filter(item => item.name == to.name).length != 0 ||
+          nextChildrenRoute.filter(item => item.name == to.name).length != 0
+        ) {
           next();
         } else {
           $vm.$message({

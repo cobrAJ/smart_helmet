@@ -1,11 +1,17 @@
 import Login from "../views/Login.vue";
 
-let routes = [
+let nextChildrenRoute = [
     {
-        path: "mapView",
-        name: "mapView",
-        component: () => import("../views/mapView.vue"),
-        description: "地图",
+        path: "organizationManagement",
+        name: "organizationManagement",
+        component: () => import("../views/organizationManagement.vue"),
+        description: "组织管理",
+    },
+    {
+        path: "administratorManagement",
+        name: "administratorManagement",
+        component: () => import("../views/administratorManagement.vue"),
+        description: "管理员管理",
     },
     {
         path: "deviceManager",
@@ -13,6 +19,8 @@ let routes = [
         component: () => import("../views/deviceManager.vue"),
         description: "设备管理",
     },
+]
+let childrenRoute = [
     {
         path: "logManager",
         name: "logManager",
@@ -32,16 +40,17 @@ let routes = [
         description: "告警管理",
     },
     {
-        path: "organizationManagement",
-        name: "organizationManagement",
-        component: () => import("../views/organizationManagement.vue"),
-        description: "组织管理",
+        path: "totalManager",
+        name: "totalManager",
+        redirect: "/home/totalManager/organizationManagement",
+        description: "管理",
+        children: nextChildrenRoute
     },
     {
-        path: "administratorManagement",
-        name: "administratorManagement",
-        component: () => import("../views/administratorManagement.vue"),
-        description: "管理员管理",
+        path: "mapView",
+        name: "mapView",
+        component: () => import("../views/mapView.vue"),
+        description: "返回地图",
     },
     // {
     //     path: "systemManager",
@@ -51,10 +60,6 @@ let routes = [
     // },
 ];
 
-let childrenRoute = [];
-for (let key in routes) {
-    childrenRoute.push(routes[key]);
-}
 let defaultRoute = [
     {
         path: "/",
@@ -78,4 +83,4 @@ let defaultRoute = [
     }
 ];
 
-export { defaultRoute, childrenRoute };
+export { defaultRoute, childrenRoute, nextChildrenRoute };

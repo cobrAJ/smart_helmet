@@ -6,6 +6,20 @@
       </el-input>
     </div>
     <div id="map-view"></div>
+    <div class="device-navigate">
+      <a href="#/home/totalManager">
+        <img src="static/config.png" alt />
+      </a>
+      <a href="#/home/waringManager">
+        <img src="static/warning.png" alt />
+      </a>
+      <a href="#/home/cloudAction">
+        <img src="static/cloudwork.png" alt />
+      </a>
+      <a href="#/home/logManager">
+        <img src="static/document.png" alt />
+      </a>
+    </div>
     <div class="device-info">
       <div>总数：{{256}}</div>
       <div>在线：{{256}}</div>
@@ -108,9 +122,9 @@ export default {
 .search-area {
   width: 300px;
   position: fixed;
-  left: 270px;
+  left: 40px;
   z-index: 1;
-  top: 80px;
+  top: 40px;
 }
 
 .open-tips {
@@ -133,5 +147,22 @@ export default {
   height: 20px;
   margin-right: 10px;
   vertical-align: bottom;
+}
+.device-navigate {
+  position: fixed;
+  top: 30%;
+  right: 30px;
+  z-index: 1;
+}
+.device-navigate > a {
+  display: block;
+  margin-bottom: 15px;
+  background: white;
+  border-radius: 3px;
+  box-shadow: 1px 1px 1px 1px #dddddd;
+}
+
+.device-navigate > a img {
+  width: 30px;
 }
 </style>
