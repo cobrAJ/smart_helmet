@@ -41,7 +41,7 @@
       </el-form-item>
       <el-form-item
         label="开始时间"
-        v-if="form.formData.deviceType == 1"
+        v-if="form.formData.deviceType == 0"
         label-width="80px"
         style="text-align: left;"
       >
@@ -53,7 +53,7 @@
       </el-form-item>
       <el-form-item
         label="结束时间"
-        v-if="form.formData.deviceType == 1"
+        v-if="form.formData.deviceType == 0"
         label-width="80px"
         style="text-align: left;"
       >

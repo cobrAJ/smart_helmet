@@ -13,9 +13,9 @@
       <el-button type="primary" plain icon="el-icon-edit" @click="openPop('change')">修改</el-button>
       <el-button type="primary" plain icon="el-icon-delete" @click="deleteFunc">删除</el-button>
       <el-button type="primary" plain icon="el-icon-download" @click="openPop('import')">导入数据</el-button>
-      <!-- <el-button type="primary" plain icon="el-icon-circle-check" @click="openPop('binding')">绑定部门</el-button>
+      <el-button type="primary" plain icon="el-icon-circle-check" @click="openPop('binding')">绑定部门</el-button>
       <el-button type="primary" plain icon="el-icon-circle-close" @click="openPop('untie')">解绑部门</el-button>
-      <el-button type="primary" plain icon="el-icon-camera" @click="openPop('setting')">摄像头设置</el-button>-->
+      <el-button type="primary" plain icon="el-icon-camera" @click="openPop('setting')">摄像头设置</el-button>
     </div>
     <div class="table-wrapper" ref="tableRef">
       <el-table
