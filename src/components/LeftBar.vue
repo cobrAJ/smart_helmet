@@ -40,6 +40,9 @@ export default {
   .el-tree {
     background: transparent;
     .el-tree-node {
+      &.is-current {
+        background: rgba(30, 43, 62, 0.8);
+      }
       .el-tree-node__content {
         height: 40px;
         &:hover {

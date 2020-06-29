@@ -127,6 +127,7 @@ export default {
   },
   watch: {
     $route (now, old) {
+      this.getOrgList()
       defaultRoute[2].children.forEach((item, index) => {
         if (item.name === now.name || (item.name === 'totalManager' && now.name === 'organizationManagement')) {
           this.activeIndex = item.name
@@ -176,19 +177,32 @@ export default {
     //获取当前选中树节点
     getSelectNode(val) {
       // console.log("val", val);
+      // 管理跳转
+      if (val.isTotalManager) {
+        location.hash = "#/home/totalManager/" + val.path;
+      }
     },
     //加载组织树
     getOrgList() {
-      xmlRequest({
-        url: "/api/sys/dept/list",
-        success: data => {
-          this.$set(this._data, "treeData", data);
-        },
-        error: e => {
-          console.log(e);
-          this.$set(this._data, "treeData", e);
-        }
-      });
+      if (this.$route.name === 'organizationManagement' || this.$route.name === 'administratorManagement' || this.$route.name === 'deviceManager') {
+        let treeData = [
+          { name: '组织管理', path: 'organizationManagement', isTotalManager: true },
+          { name: '管理员管理', path: 'administratorManagement', isTotalManager: true },
+          { name: '设备管理', path: 'deviceManager', isTotalManager: true }
+        ]
+        this.$set(this._data, "treeData", treeData)
+      } else {
+        xmlRequest({
+          url: "/api/sys/dept/list",
+          success: data => {
+            this.$set(this._data, "treeData", data);
+          },
+          error: e => {
+            console.log(e);
+            this.$set(this._data, "treeData", e);
+          }
+        });
+      }
     }
   },
   mounted() {
