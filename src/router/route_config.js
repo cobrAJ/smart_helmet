@@ -43,6 +43,7 @@ let childrenRoute = [
         path: "totalManager",
         name: "totalManager",
         redirect: "/home/totalManager/organizationManagement",
+        component: () => import("../views/totalManager.vue"),
         description: "管理",
         children: nextChildrenRoute
     },
@@ -51,13 +52,7 @@ let childrenRoute = [
         name: "mapView",
         component: () => import("../views/mapView.vue"),
         description: "返回地图",
-    },
-    // {
-    //     path: "systemManager",
-    //     name: "systemManager",
-    //     component: () => import("../views/systemManager.vue"),
-    //     description: "设置",
-    // },
+    }
 ];
 
 let defaultRoute = [
