@@ -125,6 +125,15 @@ export default {
       ]
     };
   },
+  watch: {
+    $route (now, old) {
+      defaultRoute[2].children.forEach((item, index) => {
+        if (item.name === now.name || (item.name === 'totalManager' && now.name === 'organizationManagement')) {
+          this.activeIndex = item.name
+        }
+      })
+    }
+  },
   components: {
     LeftBar,
     Dialog
