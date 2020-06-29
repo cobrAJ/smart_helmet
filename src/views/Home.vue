@@ -66,73 +66,21 @@ export default {
       popData: {},
       defaultRoute,
       activeIndex,
-      treeData: [
-        // {
-        //   label: "一级 1",
-        //   children: [
-        //     {
-        //       label: "二级 1-1",
-        //       children: [
-        //         {
-        //           label: "三级 1-1-1"
-        //         }
-        //       ]
-        //     }
-        //   ]
-        // },
-        // {
-        //   label: "一级 2",
-        //   children: [
-        //     {
-        //       label: "二级 2-1",
-        //       children: [
-        //         {
-        //           label: "三级 2-1-1"
-        //         }
-        //       ]
-        //     },
-        //     {
-        //       label: "二级 2-2",
-        //       children: [
-        //         {
-        //           label: "三级 2-2-1"
-        //         }
-        //       ]
-        //     }
-        //   ]
-        // },
-        // {
-        //   label: "一级 3",
-        //   children: [
-        //     {
-        //       label: "二级 3-1",
-        //       children: [
-        //         {
-        //           label: "三级 3-1-1"
-        //         }
-        //       ]
-        //     },
-        //     {
-        //       label: "二级 3-2",
-        //       children: [
-        //         {
-        //           label: "三级 3-2-1"
-        //         }
-        //       ]
-        //     }
-        //   ]
-        // }
-      ]
+      treeData: []
     };
   },
   watch: {
-    $route (now, old) {
-      this.getOrgList()
+    $route(now, old) {
+      this.getOrgList();
       defaultRoute[2].children.forEach((item, index) => {
-        if (item.name === now.name || (item.name === 'totalManager' && now.name === 'organizationManagement')) {
-          this.activeIndex = item.name
+        if (
+          item.name === now.name ||
+          (item.name === "totalManager" &&
+            now.name === "organizationManagement")
+        ) {
+          this.activeIndex = item.name;
         }
-      })
+      });
     }
   },
   components: {
@@ -184,13 +132,25 @@ export default {
     },
     //加载组织树
     getOrgList() {
-      if (this.$route.name === 'organizationManagement' || this.$route.name === 'administratorManagement' || this.$route.name === 'deviceManager') {
+      if (
+        this.$route.name === "organizationManagement" ||
+        this.$route.name === "administratorManagement" ||
+        this.$route.name === "deviceManager"
+      ) {
         let treeData = [
-          { name: '组织管理', path: 'organizationManagement', isTotalManager: true },
-          { name: '管理员管理', path: 'administratorManagement', isTotalManager: true },
-          { name: '设备管理', path: 'deviceManager', isTotalManager: true }
-        ]
-        this.$set(this._data, "treeData", treeData)
+          {
+            name: "组织管理",
+            path: "organizationManagement",
+            isTotalManager: true
+          },
+          {
+            name: "管理员管理",
+            path: "administratorManagement",
+            isTotalManager: true
+          },
+          { name: "设备管理", path: "deviceManager", isTotalManager: true }
+        ];
+        this.$set(this._data, "treeData", treeData);
       } else {
         xmlRequest({
           url: "/api/sys/dept/list",
