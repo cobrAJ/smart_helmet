@@ -7,16 +7,16 @@
     </div>
     <div id="map-view"></div>
     <div class="device-navigate">
-      <a href="#/home/totalManager">
+      <a @click="linkTo('/home/totalManager')">
         <img src="static/config.png" alt />
       </a>
-      <a href="#/home/waringManager">
+      <a @click="linkTo('/home/waringManager')">
         <img src="static/warning.png" alt />
       </a>
-      <a href="#/home/cloudAction">
+      <a @click="linkTo('/home/cloudAction')">
         <img src="static/cloudwork.png" alt />
       </a>
-      <a href="#/home/logManager">
+      <a @click="linkTo('/home/logManager')">
         <img src="static/document.png" alt />
       </a>
     </div>
@@ -48,6 +48,9 @@ export default {
     };
   },
   methods: {
+    linkTo(target) {
+      this.$router.push(target);
+    },
     initMap() {
       this.mapModel = new AMap.Map("map-view");
       this.mapModel.on("complete", () => {

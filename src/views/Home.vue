@@ -120,7 +120,7 @@ export default {
       });
     },
     linkTo(path) {
-      location.hash = "#/home/" + path;
+      this.$router.push("/home/" + path);
     },
     //获取当前选中树节点
     getSelectNode(val) {
