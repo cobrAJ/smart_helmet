@@ -20,7 +20,7 @@
         highlight-current-row
         @current-change="selectRow"
         :indent="indent"
-        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        :tree-props="{children: 'children', hasChildren: 'children.length'}"
       >
         <el-table-column prop="id" label width="100">
           <template slot-scope="scope">
@@ -90,7 +90,7 @@ export default {
     this.getTableList();
   },
   methods: {
-    //转换成树状结构所需要的data格式
+    /*//转换成树状结构所需要的data格式
     toTree(objects, keyName, parentKeyName) {
       if (!keyName) {
         throw "keyName argument is required";
@@ -120,8 +120,7 @@ export default {
           }
         }
       }
-
-      // 排除已添加到父项的项得到树
+    排除已添加到父项的项得到树
       var tree = [];
       for (const key in map) {
         if (map.hasOwnProperty(key)) {
@@ -132,7 +131,8 @@ export default {
         }
       }
       return tree;
-    },
+    },*/
+
     //获取表格数据
     getTableList() {
       let data = { ...this.pagesInfo };
@@ -145,11 +145,7 @@ export default {
         success: data => {
           this.$set(this.pagesInfo, "total", data.data.total);
           //树形数据组装
-          this.$set(
-            this._data,
-            "tableData",
-            this.toTree(data.data.records, "deptId", "parentId")
-          );
+          this.$set(this._data, "tableData", data.data);
         }
       });
     },

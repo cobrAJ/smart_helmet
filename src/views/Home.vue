@@ -155,11 +155,14 @@ export default {
         xmlRequest({
           url: "/api/sys/dept/list",
           success: data => {
-            this.$set(this._data, "treeData", data);
+            this.$set(this._data, "treeData", [
+              { name: "组织架构", children: data.data }
+            ]);
           },
           error: e => {
-            console.log(e);
-            this.$set(this._data, "treeData", e);
+            // this.$set(this._data, "treeData", [
+            //   { name: "组织架构", children: e }
+            // ]);
           }
         });
       }

@@ -81,9 +81,8 @@
     <div class="foot-wrapper">
       <!-- 分页 begin-->
       <el-pagination
-        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        layout="total,sizes, prev, pager, next"
+        layout="total, prev, pager, next"
         :current-page="pagesInfo.current"
         :page-size="pagesInfo.size"
         :total="pagesInfo.total"
@@ -202,8 +201,12 @@ export default {
         url: "/api/hel/record/list",
         data,
         success: data => {
+          if (data.data.records.length != 0) {
+            this.$set(this._data, "tableData", data.data.records);
+          }
+          this.$set(this.pagesInfo, "current", data.data.current);
+          this.$set(this.pagesInfo, "size", data.data.size);
           this.$set(this.pagesInfo, "total", data.data.total);
-          this.$set(this._data, "tableData", data.data.records);
         }
       });
     },
@@ -247,7 +250,6 @@ export default {
     handleCurrentChange(val) {
       this.pagesInfo.current = val;
       this.getTableList();
-      console.log(`当前页: ${val}`);
     }
   }
 };
