@@ -14,17 +14,21 @@
       <el-table
         :data="tableData"
         style="width: 100%;"
-        row-key="id"
         border
+        row-key="deptId"
         :max-height="tableMaxHeight"
-        highlight-current-row
         @current-change="selectRow"
+        highlight-current-row
         :indent="indent"
-        :tree-props="{children: 'children', hasChildren: 'children.length'}"
+        :tree-props="{children: 'children'}"
       >
-        <el-table-column prop="id" label width="100">
+        <el-table-column label width="100">
           <template slot-scope="scope">
-            <el-radio v-model="currentRadio" :label="scope.row.id" text-color="transparent"></el-radio>
+            <el-radio
+              v-model="currentRadio"
+              :label="scope.row.deptId"
+              text-color="transparent"
+            >{{scope.row.deptId}}</el-radio>
           </template>
         </el-table-column>
         <el-table-column prop="deptId" label="部门ID"></el-table-column>
@@ -71,15 +75,15 @@ export default {
       pagesInfo: {
         current: 1,
         total: 400,
-        size: 10
+        size: 10,
       },
       tableData: [],
       popVisible: false,
-      popData: {}
+      popData: {},
     };
   },
   components: {
-    Dialog
+    Dialog,
   },
   created() {},
   mounted() {
@@ -142,25 +146,25 @@ export default {
       xmlRequest({
         url: "/api/sys/dept/list",
         data,
-        success: data => {
+        success: (data) => {
           this.$set(this.pagesInfo, "total", data.data.total);
           //树形数据组装
           this.$set(this._data, "tableData", data.data);
-        }
+        },
       });
     },
     //当前选中行
     selectRow(val) {
       this.selectRowData = val;
       this.isSelectRow = true;
-      this.currentRadio = val.id;
+      this.$set(this._data, "currentRadio", val.deptId);
     },
     //打开弹窗
     openPop(type) {
       if (!this.isSelectRow && type != "organizationAdd") {
         this.$message({
           message: "请选择一条记录",
-          type: "warning"
+          type: "warning",
         });
       } else {
         this.popVisible = true;
@@ -170,18 +174,16 @@ export default {
             title: "新增",
             type: type,
             formData: {
-              deptId: 0,
-              name: "",
-              parentId: 0,
-              parentName: ""
-            }
+              parentId: this.selectRowData.deptId,
+              parentName: this.selectRowData.name,
+            },
           };
         } else if (type == "organizationChange") {
           //修改
           this.popData = {
             title: "修改",
             type: type,
-            formData: this.multipleSelection[0]
+            formData: this.multipleSelection[0],
           };
         }
       }
@@ -200,22 +202,22 @@ export default {
         xmlRequest({
           url: "/api/sys/dept/save",
           data,
-          success: data => {
+          success: (data) => {
             this.$message.success("保存成功");
             //刷新列表
             this.getTableList();
-          }
+          },
         });
       } else if (val.type == "organizationChange") {
         //修改接口
         xmlRequest({
           url: "/api/sys/dept/update",
           data,
-          success: data => {
+          success: (data) => {
             this.$message.success("修改成功");
             //刷新列表
             this.getTableList();
-          }
+          },
         });
       }
     },
@@ -224,25 +226,25 @@ export default {
       if (this.multipleSelection.length == 0) {
         this.$message({
           message: "请至少选择一条记录",
-          type: "warning"
+          type: "warning",
         });
       } else {
         //删除接口
         let data = {
-          deptId: this.selectRowData.deptId
+          deptId: this.selectRowData.deptId,
         };
         xmlRequest({
           url: "/api/sys/dept/delete",
           data,
-          success: data => {
+          success: (data) => {
             //删除成功
             this.$message({
               message: "删除成功！",
-              type: "success"
+              type: "success",
             });
             //刷新列表
             this.getTableList();
-          }
+          },
         });
 
         //删除失败
@@ -260,8 +262,8 @@ export default {
       this.pagesInfo.current = val;
       this.getTableList();
       // console.log(`当前页: ${val}`);
-    }
-  }
+    },
+  },
 };
 </script>
 

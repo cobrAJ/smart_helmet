@@ -164,8 +164,8 @@ export default {
   name: "Dialog",
   props: {
     popData: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -181,7 +181,7 @@ export default {
         parent: "parentId", // 父级唯一标识
         value: "id", // 唯一标识
         label: "label", // 标签显示
-        children: "children" // 子级
+        children: "children", // 子级
       },
       // 数据列表
       options: [
@@ -193,21 +193,21 @@ export default {
             {
               parentId: "A",
               id: "A-1",
-              label: "label-A-1"
-            }
-          ]
+              label: "label-A-1",
+            },
+          ],
         },
         {
           parentId: "0",
           value: "B",
           label: "label-B",
-          children: []
-        }
-      ]
+          children: [],
+        },
+      ],
     };
   },
   components: {
-    SelectTree
+    SelectTree,
   },
   mounted() {},
   methods: {
@@ -219,14 +219,14 @@ export default {
       var rABS = false; //是否将文件读取为二进制字符串
       var f = this.file;
       var reader = new FileReader(); //if (!FileReader.prototype.readAsBinaryString) {
-      FileReader.prototype.readAsBinaryString = function(f) {
+      FileReader.prototype.readAsBinaryString = function (f) {
         var binary = "";
         var rABS = false; //是否将文件读取为二进制字符串
         var pt = this;
         var wb; //读取完成的数据
         var outdata;
         var reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
           var bytes = new Uint8Array(reader.result);
           var length = bytes.byteLength;
           for (var i = 0; i < length; i++) {
@@ -236,16 +236,16 @@ export default {
           if (rABS) {
             wb = XLSX.read(btoa(fixdata(binary)), {
               //手动转化
-              type: "base64"
+              type: "base64",
             });
           } else {
             wb = XLSX.read(binary, {
-              type: "binary"
+              type: "binary",
             });
           } // outdata就是你想要的东西 excel导入的数据
           outdata = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]); // excel 数据再处理
           let arr = [];
-          outdata.map(v => {
+          outdata.map((v) => {
             let obj = {};
             obj.address = v["定位地址"];
             obj.createTime = v["创建时间"];
@@ -290,32 +290,32 @@ export default {
           this.hasError = false;
           let data = {
             newPassword: this.form.formData.confirmPassword,
-            password: this.form.formData.oldPassword
+            password: this.form.formData.oldPassword,
           };
           xmlRequest({
             url: "/api/sys/user/password",
             data,
-            success: data => {
+            success: (data) => {
               this.$message({
                 type: "success",
-                message: "密码重置成功,请重新登陆"
+                message: "密码重置成功,请重新登陆",
               });
               this.closeDialog();
               setTimeout(() => {
                 this.$router.push("/login");
               }, 3000);
-            }
+            },
           });
         } else {
           this.$message({
             type: "error",
-            message: "新密码两次输入不一致"
+            message: "新密码两次输入不一致",
           });
         }
       } else {
         this.$message({
           type: "error",
-          message: "旧密码不正确"
+          message: "旧密码不正确",
         });
       }
     },
@@ -328,10 +328,26 @@ export default {
     gobackFunc() {
       this.$emit("popClose", true);
     },
+    deptAdd() {
+      xmlRequest({
+        url: "/api/sys/dept/save",
+        data: {
+          name: this.form.formData.name,
+          parentName: this.form.formData.parentName,
+          parentId: this.form.formData.parentId,
+        },
+        success: (data) => {
+          console.log(data);
+          this.$set(this._data, "isVisible", false);
+        },
+      });
+    },
     //确定
     confirmFunc() {
       if (this.form.type == "changePassword") {
         this.changePassword();
+      } else if (this.form.type == "organizationAdd") {
+        this.deptAdd();
       } else {
         if (this.importExcelList.length > 0) {
           //导入excel数据
@@ -340,8 +356,8 @@ export default {
           this.$emit("getPopData", this.form);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="less">

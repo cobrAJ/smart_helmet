@@ -2,7 +2,7 @@
   <div class="map-view">
     <div class="search-area">
       <el-input v-model="searchValue" placeholder="输入设备号/工号查询">
-        <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-button slot="append" icon="el-icon-search" @click="searchDevice"></el-button>
       </el-input>
     </div>
     <div id="map-view"></div>
@@ -31,23 +31,46 @@
 <script>
 import markIcon from "../assets/mark.png";
 import warningMarkIcon from "../assets/warning_mark.png";
+import { xmlRequest } from "../utils/utils";
 
 export default {
   data() {
+    let helmetPointListOrigin = [
+      { lng: 116.362209, lat: 39.887487, type: "normal", userid: "1" },
+      { lng: 116.422897, lat: 39.878002, type: "waring", userid: "2" },
+      { lng: 116.372105, lat: 39.90651, type: "normal", userid: "3" },
+      { lng: 116.428945, lat: 39.89663, type: "normal", userid: "4" },
+    ];
+    let helmetPointList = JSON.parse(JSON.stringify(helmetPointListOrigin));
     return {
       mapModel: "",
-      helmetPointList: [
-        { lng: 116.362209, lat: 39.887487, type: "normal", userid: "1" },
-        { lng: 116.422897, lat: 39.878002, type: "waring", userid: "2" },
-        { lng: 116.372105, lat: 39.90651, type: "normal", userid: "3" },
-        { lng: 116.428945, lat: 39.89663, type: "normal", userid: "4" }
-      ],
+      helmetPointListOrigin,
+      helmetPointList,
       infoWindow: "",
       searchValue: "",
-      selectDeviceUserid: ""
+      selectDeviceUserid: "",
     };
   },
   methods: {
+    searchDevice() {
+      if (this.searchValue) {
+        xmlRequest({
+          url: "/api/hel/device/list",
+          data: {
+            keyword: this.searchValue,
+          },
+          success: (data) => {
+            this.helmetPointList = data.data.records;
+            this.helmetPointList.map((item) => this.createMark(item));
+          },
+        });
+      } else {
+        this.helmetPointList = JSON.parse(
+          JSON.stringify(this.helmetPointListOrigin)
+        );
+        this.helmetPointList.map((item) => this.createMark(item));
+      }
+    },
     linkTo(target) {
       this.$router.push(target);
     },
@@ -55,7 +78,7 @@ export default {
       this.mapModel = new AMap.Map("map-view");
       this.mapModel.on("complete", () => {
         this.mapModel.add(
-          this.helmetPointList.map(item => this.createMark(item))
+          this.helmetPointList.map((item) => this.createMark(item))
         );
       });
       this.createInfoWindow();
@@ -67,10 +90,10 @@ export default {
         imageOffset: new AMap.Pixel(-9, -3),
         icon: this.createIcon(markPoint),
         size: new AMap.Size(40, 50),
-        offset: new AMap.Pixel(-20, 0)
+        offset: new AMap.Pixel(-20, 0),
       });
       let that = this;
-      AMap.Event.addListener(newMark, "click", function() {
+      AMap.Event.addListener(newMark, "click", function () {
         that.infoWindow.open(that.mapModel, newMark.getPosition());
         that.selectDeviceUserid = markPoint.userid;
       });
@@ -81,7 +104,7 @@ export default {
         size: new AMap.Size(40, 50), // 图标尺寸
         image: markPoint.type == "normal" ? markIcon : warningMarkIcon, // Icon的图像
         imageOffset: new AMap.Pixel(0, 0), // 图像相对展示区域的偏移量，适于雪碧图等
-        imageSize: new AMap.Size(40, 50) // 根据所设置的大小拉伸或压缩图片
+        imageSize: new AMap.Size(40, 50), // 根据所设置的大小拉伸或压缩图片
       });
     },
     createInfoWindow() {
@@ -94,15 +117,15 @@ export default {
         "<li><div><img src='static/user.png' />佩戴人员</div></li></ul>";
       // 创建 infoWindow 实例
       this.infoWindow = new AMap.InfoWindow({
-        content: content //传入 dom 对象，或者 html 字符串
+        content: content, //传入 dom 对象，或者 html 字符串
       });
-    }
+    },
   },
   mounted() {
     this.$nextTick(() => {
       this.initMap();
     });
-  }
+  },
 };
 </script>
 
