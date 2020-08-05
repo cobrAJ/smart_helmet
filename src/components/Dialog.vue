@@ -328,26 +328,12 @@ export default {
     gobackFunc() {
       this.$emit("popClose", true);
     },
-    deptAdd() {
-      xmlRequest({
-        url: "/api/sys/dept/save",
-        data: {
-          name: this.form.formData.name,
-          parentName: this.form.formData.parentName,
-          parentId: this.form.formData.parentId,
-        },
-        success: (data) => {
-          console.log(data);
-          this.$set(this._data, "isVisible", false);
-        },
-      });
-    },
     //确定
     confirmFunc() {
       if (this.form.type == "changePassword") {
         this.changePassword();
       } else if (this.form.type == "organizationAdd") {
-        this.deptAdd();
+         this.$emit("getPopData", this.form);
       } else {
         if (this.importExcelList.length > 0) {
           //导入excel数据

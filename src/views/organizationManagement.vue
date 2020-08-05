@@ -223,7 +223,7 @@ export default {
     },
     //删除
     deleteFunc() {
-      if (this.multipleSelection.length == 0) {
+      if (this.currentRadio == -1) {
         this.$message({
           message: "请至少选择一条记录",
           type: "warning",
