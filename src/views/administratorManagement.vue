@@ -52,7 +52,14 @@
       ></el-pagination>
     </div>
     <!-- 新增弹窗 -->
-    <Dialog v-if="popVisible" :popData="popData" @popClose="popClose" @getPopData="getPopData" />
+    <Dialog
+      v-if="popVisible"
+      :popData="popData"
+      :optionData="optionData"
+      :defaultPropsData="defaultPropsData"
+      @popClose="popClose"
+      @getPopData="getPopData"
+    />
   </div>
 </template>
 
@@ -69,15 +76,22 @@ export default {
       pagesInfo: {
         current: 1,
         total: 400,
-        size: 10
+        size: 10,
       },
       tableData: [],
       popVisible: false,
-      popData: {}
+      popData: {},
+      optionData: [],
+      defaultPropsData: {
+        parent: "parentId",
+        value: "id",
+        label: "name",
+        children: "children",
+      },
     };
   },
   components: {
-    Dialog
+    Dialog,
   },
   created() {},
   mounted() {
@@ -86,8 +100,18 @@ export default {
       this.tableMaxHeight = this.$refs.tableRef.offsetHeight;
     });
     this.getTableList();
+    this.getDeptTableList();
   },
   methods: {
+    getDeptTableList() {
+      xmlRequest({
+        url: "/api/sys/dept/list",
+        success: (data) => {
+          //树形数据组装
+          this.$set(this._data, "optionData", data.data);
+        },
+      });
+    },
     //获取表格数据
     getTableList() {
       let data = { ...this.pagesInfo };
@@ -97,10 +121,10 @@ export default {
       xmlRequest({
         url: "/api/sys/user/list",
         data,
-        success: data => {
+        success: (data) => {
           this.$set(this.pagesInfo, "total", data.data.total);
           this.$set(this._data, "tableData", data.data.records);
-        }
+        },
       });
     },
     //表格序号
@@ -126,22 +150,22 @@ export default {
         xmlRequest({
           url: "/api/sys/user/save",
           data,
-          success: data => {
+          success: (data) => {
             this.$message.success("保存成功");
             //刷新列表
             this.getTableList();
-          }
+          },
         });
       } else if (val.type == "administratorChange") {
         //修改接口
         xmlRequest({
           url: "/api/sys/user/update",
           data,
-          success: data => {
+          success: (data) => {
             this.$message.success("修改成功");
             //刷新列表
             this.getTableList();
-          }
+          },
         });
       }
     },
@@ -150,7 +174,7 @@ export default {
       if (this.multipleSelection.length == 0 && type != "administratorAdd") {
         this.$message({
           message: "请选择一条记录",
-          type: "warning"
+          type: "warning",
         });
       } else if (
         this.multipleSelection.length > 1 &&
@@ -158,7 +182,7 @@ export default {
       ) {
         this.$message({
           message: "只能选择一条记录",
-          type: "warning"
+          type: "warning",
         });
       } else {
         this.popVisible = true;
@@ -179,15 +203,15 @@ export default {
               salt: "",
               status: 0,
               userId: 0,
-              username: ""
-            }
+              username: "",
+            },
           };
         } else if (type == "administratorChange") {
           //修改
           this.popData = {
             title: "修改",
             type: type,
-            formData: this.multipleSelection[0]
+            formData: this.multipleSelection[0],
           };
         }
       }
@@ -197,30 +221,30 @@ export default {
       if (this.multipleSelection.length == 0) {
         this.$message({
           message: "请至少选择一条记录",
-          type: "warning"
+          type: "warning",
         });
       } else {
         let userIdArr = [];
         //需要删除的用户id
-        this.multipleSelection.forEach(element => {
+        this.multipleSelection.forEach((element) => {
           userIdArr.push(element.userId);
         });
         //删除接口
         let data = {
-          userIds: userIdArr
+          userIds: userIdArr,
         };
         xmlRequest({
           url: "/api/sys/user/delete",
           data,
-          success: data => {
+          success: (data) => {
             //删除成功
             this.$message({
               message: "删除成功！",
-              type: "success"
+              type: "success",
             });
             //刷新列表
             this.getTableList();
-          }
+          },
         });
 
         //删除失败
@@ -238,8 +262,8 @@ export default {
       this.pagesInfo.current = val;
       this.getTableList();
       // console.log(`当前页: ${val}`);
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -114,9 +114,9 @@
       :model="form.formData"
       v-if="form.type == 'administratorAdd' || form.type == 'administratorChange'"
     >
-      <!-- <el-form-item label="上级部门" label-width="80px">
+      <el-form-item label="上级部门" label-width="80px">
         <select-tree v-model="selected" :options="options" :props="defaultProps" />
-      </el-form-item>-->
+      </el-form-item>
       <el-form-item label="用户名" label-width="80px">
         <el-input v-model="form.formData.username" autocomplete="off" placeholder="部门名称"></el-input>
       </el-form-item>
@@ -166,25 +166,9 @@ export default {
     popData: {
       type: Object,
     },
-  },
-  data() {
-    return {
-      importExcelList: [],
-      fileList: [],
-      isVisible: true,
-      hasError: false,
-      form: this.popData,
-      // 默认选中值
-      selected: "A",
-      // 数据默认字段
-      defaultProps: {
-        parent: "parentId", // 父级唯一标识
-        value: "id", // 唯一标识
-        label: "label", // 标签显示
-        children: "children", // 子级
-      },
-      // 数据列表
-      options: [
+    optionData: {
+      type: Array,
+      default: [
         {
           parentId: "0",
           id: "A",
@@ -204,6 +188,30 @@ export default {
           children: [],
         },
       ],
+    },
+    defaultPropsData: {
+      type: Object,
+      default: {
+        parent: "parentId", // 父级唯一标识
+        value: "id", // 唯一标识
+        label: "label", // 标签显示
+        children: "children", // 子级
+      },
+    },
+  },
+  data() {
+    return {
+      importExcelList: [],
+      fileList: [],
+      isVisible: true,
+      hasError: false,
+      form: this.popData,
+      // 默认选中值
+      selected: "A",
+      // 数据默认字段
+      defaultProps: this.defaultPropsData,
+      // 数据列表
+      options: this.optionData,
     };
   },
   components: {
@@ -333,7 +341,7 @@ export default {
       if (this.form.type == "changePassword") {
         this.changePassword();
       } else if (this.form.type == "organizationAdd") {
-         this.$emit("getPopData", this.form);
+        this.$emit("getPopData", this.form);
       } else {
         if (this.importExcelList.length > 0) {
           //导入excel数据
