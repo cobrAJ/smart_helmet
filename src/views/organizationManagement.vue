@@ -183,7 +183,7 @@ export default {
           this.popData = {
             title: "修改",
             type: type,
-            formData: this.multipleSelection[0],
+            formData: this.selectRowData,
           };
         }
       }
