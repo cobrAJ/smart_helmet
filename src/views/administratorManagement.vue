@@ -84,7 +84,7 @@ export default {
       optionData: [],
       defaultPropsData: {
         parent: "parentId",
-        value: "id",
+        value: "deptId",
         label: "name",
         children: "children",
       },
@@ -143,8 +143,8 @@ export default {
     //弹窗传来数据
     getPopData(val) {
       this.popVisible = false;
-      // console.log(2323233, val);
       let data = val.formData;
+      console.log("formData", data);
       if (val.type == "administratorAdd") {
         //新增接口
         xmlRequest({
@@ -202,7 +202,7 @@ export default {
               roleName: "",
               salt: "",
               status: 0,
-              userId: 0,
+              // userId: 0,
               username: "",
             },
           };

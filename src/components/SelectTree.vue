@@ -37,19 +37,19 @@ export default {
   name: "Pagination",
   props: {
     // 接收绑定参数
-    value: String,
+    // value: String,
     // 输入框宽度
     width: String,
     // 选项数据
     options: {
       type: Array,
-      required: true
+      required: true,
     },
     // 输入框占位符
     placeholder: {
-      type: String,
+      // type: String,
       required: false,
-      default: "请选择"
+      default: "请选择",
     },
     // 树节点配置选项
     props: {
@@ -59,14 +59,14 @@ export default {
         parent: "parentId",
         value: "rowGuid",
         label: "areaName",
-        children: "children"
-      })
-    }
+        children: "children",
+      }),
+    },
   },
   // 设置绑定参数
   model: {
     prop: "value",
-    event: "selected"
+    event: "selected",
   },
   computed: {
     // 是否为树状结构数据
@@ -77,7 +77,7 @@ export default {
     // 若非树状结构，则转化为树状结构数据
     data() {
       return this.dataType ? this.options : this.switchTree();
-    }
+    },
   },
   watch: {
     labelModel(val) {
@@ -88,7 +88,7 @@ export default {
     },
     value(val) {
       this.labelModel = this.queryTree(this.data, val);
-    }
+    },
   },
   data() {
     return {
@@ -99,7 +99,7 @@ export default {
       // 输入框显示值
       labelModel: "",
       // 实际请求传值
-      valueModel: "0"
+      valueModel: "0",
     };
   },
   created() {
@@ -109,8 +109,9 @@ export default {
     }
     // 获取输入框宽度同步至树状菜单宽度
     this.$nextTick(() => {
-      this.treeWidth = `${(this.width ||
-        this.$refs.input.$refs.input.clientWidth) - 24}px`;
+      this.treeWidth = `${
+        (this.width || this.$refs.input.$refs.input.clientWidth) - 24
+      }px`;
     });
   },
   methods: {
@@ -118,6 +119,8 @@ export default {
     onClickNode(node) {
       this.labelModel = node[this.props.label];
       this.valueModel = node[this.props.value];
+      this.$emit("selected", this.valueModel);
+      console.log(node, this.valueModel);
       this.onCloseTree();
     },
     // 偏平数组转化为树状层级结构
@@ -136,7 +139,7 @@ export default {
     // 隐藏时触发
     onHidePopover() {
       this.showStatus = false;
-      this.$emit("selected", this.valueModel);
+      // this.$emit("selected", this.valueModel);
     },
     // 树节点过滤方法
     filterNode(query, data) {
@@ -160,7 +163,7 @@ export default {
     },
     // 将一维的扁平数组转换为多层级对象
     buildTree(data, id = "0") {
-      const fa = parentId => {
+      const fa = (parentId) => {
         const temp = [];
         for (let i = 0; i < data.length; i++) {
           const n = data[i];
@@ -175,8 +178,8 @@ export default {
     },
     // 清除空 children项
     cleanChildren(data) {
-      const fa = list => {
-        list.map(e => {
+      const fa = (list) => {
+        list.map((e) => {
           if (e.children.length) {
             fa(e.children);
           } else {
@@ -187,8 +190,8 @@ export default {
         return list;
       };
       return fa(data);
-    }
-  }
+    },
+  },
 };
 </script>
 

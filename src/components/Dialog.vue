@@ -115,7 +115,7 @@
       v-if="form.type == 'administratorAdd' || form.type == 'administratorChange'"
     >
       <el-form-item label="上级部门" label-width="80px">
-        <select-tree v-model="selected" :options="options" :props="defaultProps" />
+        <select-tree v-model="form.formData.deptId" :options="options" :props="defaultProps" />
       </el-form-item>
       <el-form-item label="用户名" label-width="80px">
         <el-input v-model="form.formData.username" autocomplete="off" placeholder="部门名称"></el-input>
@@ -193,7 +193,7 @@ export default {
       type: Object,
       default: {
         parent: "parentId", // 父级唯一标识
-        value: "id", // 唯一标识
+        value: "deptId", // 唯一标识
         label: "label", // 标签显示
         children: "children", // 子级
       },
@@ -207,7 +207,7 @@ export default {
       hasError: false,
       form: this.popData,
       // 默认选中值
-      selected: "A",
+      // selected: "A",
       // 数据默认字段
       defaultProps: this.defaultPropsData,
       // 数据列表
