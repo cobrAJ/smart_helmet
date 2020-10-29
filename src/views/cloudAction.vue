@@ -7,9 +7,19 @@
         class="search-input"
         @keyup.enter.native="getTableList"
       >
-        <i slot="suffix" class="el-input__icon el-icon-search" @click="getTableList"></i>
+        <i
+          slot="suffix"
+          class="el-input__icon el-icon-search"
+          @click="getTableList"
+        ></i>
       </el-input>
-      <el-button type="primary" plain icon="el-icon-download" @click="importFunc">导出</el-button>
+      <el-button
+        type="primary"
+        plain
+        icon="el-icon-download"
+        @click="importFunc"
+        >导出</el-button
+      >
     </div>
     <div class="table-wrapper" ref="tableRef">
       <!-- 表格 begin-->
@@ -20,14 +30,24 @@
         style="width: 100%"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" label="全选"></el-table-column>
+        <el-table-column
+          type="selection"
+          width="55"
+          label="全选"
+        ></el-table-column>
         <el-table-column prop="createTime" label="时间"></el-table-column>
         <el-table-column prop="address" label="地点"></el-table-column>
         <el-table-column prop="applyPersonId" label="申请人"></el-table-column>
-        <el-table-column prop="talkPersonId" label="通话人"></el-table-column>
+        <el-table-column label="通话号码">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.phoneNum"></el-input>
+          </template>
+        </el-table-column>
         <el-table-column prop="callForm" :label="'通话方式\n(语音、视频)'">
           <template slot-scope="scope">
-            <el-tag size="small" type="success" v-if="scope.row.callForm == 0">音频</el-tag>
+            <el-tag size="small" type="success" v-if="scope.row.callForm == 0"
+              >音频</el-tag
+            >
             <el-tag size="small" v-if="scope.row.callForm == 1">视频</el-tag>
           </template>
         </el-table-column>
@@ -47,31 +67,34 @@
                 autoplay
                 height="auto"
                 width="100%"
-              >您的浏览器不支持。</video>
+              >
+                您的浏览器不支持。
+              </video>
               <i
                 slot="reference"
                 class="el-icon-camera-solid"
-                style="font-size:20px;color:#409eff"
+                style="font-size: 20px; color: #409eff"
                 @click="openVideo(scope.row)"
               ></i>
             </el-popover>
             <!-- 视频弹出层 end-->
             <!-- 音频弹出层 begin-->
-            <el-popover
+            <i
+              v-if="scope.row.status == 'audio'"
+              slot="reference"
+              class="el-icon-microphone"
+              style="font-size: 20px; color: #409eff"
+              @click="openAudio(scope.row)"
+            ></i>
+            <!-- <el-popover
               v-if="scope.row.status == 'audio'"
               placement="left"
               width="330"
               trigger="click"
             >
-              <!-- http://devtest.qiniudn.com/secret base~.mp3 -->
               <audio src controls="controls" width="100%"></audio>
-              <i
-                slot="reference"
-                class="el-icon-microphone"
-                style="font-size:20px;color:#409eff"
-                @click="openAudio(scope.row)"
-              ></i>
-            </el-popover>
+            </el-popover> -->
+
             <!-- 音频弹出层 end-->
           </template>
         </el-table-column>
@@ -91,7 +114,12 @@
     </div>
 
     <!-- 新增弹窗 begin-->
-    <Dialog v-if="popVisible" :popData="popData" @popClose="popClose" @getPopData="getPopData" />
+    <Dialog
+      v-if="popVisible"
+      :popData="popData"
+      @popClose="popClose"
+      @getPopData="getPopData"
+    />
     <!-- 新增弹窗 end-->
   </div>
 </template>
@@ -99,6 +127,7 @@
 <script>
 import Dialog from "@/components/Dialog.vue";
 import { xmlRequest } from "../utils/utils";
+
 export default {
   name: "CloudAction",
   data() {
@@ -109,34 +138,37 @@ export default {
       pagesInfo: {
         current: 1,
         total: 400,
-        size: 10
+        size: 10,
       },
       tableData: [
         {
+          applyPersonId: "张三",
           date: "2016-05-03",
-          number: "11111",
+          phoneNum: "11111",
           status: "video",
-          setting: true
+          setting: true,
         },
         {
+          applyPersonId: "李四",
           date: "2016-05-03",
-          number: "11111",
+          phoneNum: "11112",
           status: "audio",
-          setting: true
+          setting: true,
         },
         {
+          applyPersonId: "王武",
           date: "2016-05-03",
-          number: "11111",
+          phoneNum: "11113",
           status: "audio",
-          setting: true
-        }
+          setting: true,
+        },
       ],
       popVisible: false,
-      popData: {}
+      popData: {},
     };
   },
   components: {
-    Dialog
+    Dialog,
   },
   created() {},
   mounted() {
@@ -152,7 +184,7 @@ export default {
       this.$confirm("此操作将导出excel文件, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           this.excelData = this.dataList; //你要导出的数据list。
@@ -171,7 +203,7 @@ export default {
           "通话人",
           "通话方式(语音、视频)",
           "通话时间",
-          "通话记录"
+          "通话记录",
         ]; // 导出的表头名
         const filterVal = [
           "number",
@@ -180,7 +212,7 @@ export default {
           "number",
           "number",
           "number",
-          "number"
+          "number",
         ]; // 导出的表头字段名
         const list = that.multipleSelection; //所选表格行数据
         const data = that.formatJson(filterVal, list);
@@ -188,7 +220,7 @@ export default {
       });
     },
     formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => v[j]));
+      return jsonData.map((v) => filterVal.map((j) => v[j]));
     },
     //获取表格数据
     getTableList() {
@@ -200,18 +232,20 @@ export default {
       xmlRequest({
         url: "/api/hel/record/list",
         data,
-        success: data => {
+        success: (data) => {
           if (data.data.records.length != 0) {
             this.$set(this._data, "tableData", data.data.records);
           }
           this.$set(this.pagesInfo, "current", data.data.current);
           this.$set(this.pagesInfo, "size", data.data.size);
           this.$set(this.pagesInfo, "total", data.data.total);
-        }
+        },
       });
     },
     //打开音频
-    openAudio(value) {},
+    openAudio(value) {
+      sipCall("call-audio");
+    },
     //打开视频
     openVideo(value) {},
     //表格选择
@@ -233,7 +267,7 @@ export default {
       if (this.multipleSelection.length == 0) {
         this.$message({
           message: "请选择至少一条记录导出！",
-          type: "warning"
+          type: "warning",
         });
       } else {
         //导出excel
@@ -250,8 +284,8 @@ export default {
     handleCurrentChange(val) {
       this.pagesInfo.current = val;
       this.getTableList();
-    }
-  }
+    },
+  },
 };
 </script>
 
