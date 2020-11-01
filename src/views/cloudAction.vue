@@ -61,7 +61,7 @@
               width="800"
               trigger="click"
             >
-              <video
+              <!-- <video
                 src="http://vjs.zencdn.net/v/oceans.mp4"
                 controls="controls"
                 autoplay
@@ -69,7 +69,7 @@
                 width="100%"
               >
                 您的浏览器不支持。
-              </video>
+              </video> -->
               <i
                 slot="reference"
                 class="el-icon-camera-solid"
@@ -172,6 +172,9 @@ export default {
   },
   created() {},
   mounted() {
+    window.onload = () => {
+      !window.oSipStack ? sipRegister() : "";
+    };
     this.$nextTick(() => {
       // table max-height不支持百分比，采用获取外层div高度赋值
       this.tableMaxHeight = this.$refs.tableRef.offsetHeight;
@@ -244,6 +247,8 @@ export default {
     },
     //打开音频
     openAudio(value) {
+      // console.log(value);
+      window.txtPhoneNumber.value = value.phoneNum;
       sipCall("call-audio");
     },
     //打开视频

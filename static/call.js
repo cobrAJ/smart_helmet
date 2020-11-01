@@ -1,13 +1,38 @@
-var sTransferNumber;
-var oRingTone, oRingbackTone;
-var oSipStack, oSipSessionRegister, oSipSessionCall, oSipSessionTransferCall;
-var videoRemote, videoLocal, audioRemote;
-var bFullScreen = false;
-var oNotifICall;
-var bDisableVideo = false;
-var viewVideoLocal, viewVideoRemote, viewLocalScreencast; // <video> (webrtc) or <div> (webrtc4all)
-var oConfigCall;
-var oReadyStateTimer;
+window.sTransferNumber = "";
+window.oRingTone = "", window.oRingbackTone = "";
+window.oSipStack = "", window.oSipSessionRegister = "", window.oSipSessionCall = "", window.oSipSessionTransferCall = "";
+window.videoRemote = "", window.videoLocal = "", window.audioRemote = "";
+window.bFullScreen = false;
+window.oNotifICall = "";
+window.bDisableVideo = false;
+window.viewVideoLocal = "", window.viewVideoRemote = "", window.viewLocalScreencast = ""; // <video> (webrtc) or <div> (webrtc4all)
+window.oConfigCall = "";
+window.oReadyStateTimer = "";
+
+window.txtDisplayName = { value: "1001" };
+window.txtPrivateIdentity = { value: "1001" };
+window.txtPublicIdentity = { value: "sip:1001@139.155.45.107" };
+window.txtPassword = { value: "12345" };
+window.txtRealm = { value: "139.155.45.107" };
+window.txtPhoneNumber = { value: "" };
+window.txtRegStatus = {};
+window.btnRegister = {};
+window.btnUnRegister = {};
+window.ulCallOptions = {};
+window.txtCallStatus = {};
+window.divCallCtrl = {};
+window.divBtnCallGroup = {};
+window.btnCall = {};
+window.btnHangUp = {};
+window.fakePluginInstance = {};
+window.audio_remote = {};
+window.ringtone = {};
+window.ringbacktone = {};
+window.dtmfTone = {};
+
+//设置websocket
+window.localStorage.setItem('org.doubango.expert.websocket_server_url', "ws://139.155.45.107:5066");
+window.txtWebsocketServerUrl = { value: "ws://139.155.45.107:5066" }
 
 var C =
 {
