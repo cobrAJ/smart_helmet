@@ -12,7 +12,7 @@ import './assets/css/reset.css'
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
-export default new Vue({
+export default window.smartVue = new Vue({
   el: '#app',
   router,
   components: { App },

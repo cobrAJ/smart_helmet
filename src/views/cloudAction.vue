@@ -86,6 +86,13 @@
               style="font-size: 20px; color: #409eff"
               @click="openAudio(scope.row)"
             ></i>
+            <i
+              v-if="scope.row.status == 'audio'"
+              slot="reference"
+              class="el-icon-turn-off-microphone"
+              style="font-size: 20px; color: #409eff"
+              @click="closeAudio(scope.row)"
+            ></i>
             <!-- <el-popover
               v-if="scope.row.status == 'audio'"
               placement="left"
@@ -172,8 +179,13 @@ export default {
   },
   created() {},
   mounted() {
+    if (!window.oSipStack) {
+      sipRegister();
+    }
     window.onload = () => {
-      !window.oSipStack ? sipRegister() : "";
+      if (!window.oSipStack) {
+        sipRegister();
+      }
     };
     this.$nextTick(() => {
       // table max-height不支持百分比，采用获取外层div高度赋值
@@ -251,6 +263,10 @@ export default {
       window.txtPhoneNumber.value = value.phoneNum;
       sipCall("call-audio");
     },
+    //关闭音频
+    closeAudio(value) {
+      sipHangUp();
+    },
     //打开视频
     openVideo(value) {},
     //表格选择
@@ -322,6 +338,9 @@ export default {
   }
   .foot-wrapper {
     height: 40px;
+  }
+  .unshow {
+    display: none;
   }
 }
 </style>

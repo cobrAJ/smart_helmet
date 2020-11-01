@@ -6,7 +6,7 @@ window.bFullScreen = false;
 window.oNotifICall = "";
 window.bDisableVideo = false;
 window.viewVideoLocal = "", window.viewVideoRemote = "", window.viewLocalScreencast = ""; // <video> (webrtc) or <div> (webrtc4all)
-window.oConfigCall = "";
+window.oConfigCall = {};
 window.oReadyStateTimer = "";
 
 window.txtDisplayName = { value: "1001" };
@@ -29,6 +29,8 @@ window.audio_remote = {};
 window.ringtone = {};
 window.ringbacktone = {};
 window.dtmfTone = {};
+window.btnHoldResume = {};
+window.btnMute = {};
 
 //设置websocket
 window.localStorage.setItem('org.doubango.expert.websocket_server_url', "ws://139.155.45.107:5066");
@@ -42,9 +44,9 @@ var C =
 window.onload = function () {
     window.console && window.console.info && window.console.info("location=" + window.location);
 
-    videoLocal = document.getElementById("video_local");
-    videoRemote = document.getElementById("video_remote");
-    audioRemote = document.getElementById("audio_remote");
+    window.videoLocal = document.getElementById("video_local");
+    window.videoRemote = document.getElementById("video_remote");
+    window.audioRemote = document.getElementById("audio_remote");
 
     document.onkeyup = onKeyUp;
     document.body.onkeyup = onKeyUp;
@@ -235,13 +237,21 @@ function sipRegister() {
     try {
         btnRegister.disabled = true;
         if (!txtRealm.value || !txtPrivateIdentity.value || !txtPublicIdentity.value) {
-            txtRegStatus.innerHTML = '<b>Please fill madatory fields (*)</b>';
+            smartVue.$message({
+                message: 'Please fill madatory fields (*)',
+                type: 'warning'
+            })
+            // txtRegStatus.innerHTML = '<b>Please fill madatory fields (*)</b>';
             btnRegister.disabled = false;
             return;
         }
         var o_impu = tsip_uri.prototype.Parse(txtPublicIdentity.value);
         if (!o_impu || !o_impu.s_user_name || !o_impu.s_host) {
-            txtRegStatus.innerHTML = "<b>[" + txtPublicIdentity.value + "] is not a valid Public identity</b>";
+            smartVue.$message({
+                message: "[" + txtPublicIdentity.value + "] is not a valid Public identity",
+                type: 'warning'
+            })
+            // txtRegStatus.innerHTML = "<b>[" + txtPublicIdentity.value + "] is not a valid Public identity</b>";
             btnRegister.disabled = false;
             return;
         }
@@ -280,12 +290,20 @@ function sipRegister() {
         }
         );
         if (oSipStack.start() != 0) {
-            txtRegStatus.innerHTML = '<b>Failed to start the SIP stack</b>';
+            smartVue.$message({
+                message: "Failed to start the SIP stack",
+                type: 'warning'
+            })
+            // txtRegStatus.innerHTML = '<b>Failed to start the SIP stack</b>';
         }
         else return;
     }
     catch (e) {
-        txtRegStatus.innerHTML = "<b>2:" + e + "</b>";
+        smartVue.$message({
+            message: "2:" + e,
+            type: 'warning'
+        })
+        // txtRegStatus.innerHTML = "<b>2:" + e + "</b>";
     }
     btnRegister.disabled = false;
 }
@@ -463,17 +481,17 @@ function toggleFullScreen() {
 }
 
 function openKeyPad() {
-    divKeyPad.style.visibility = 'visible';
+    // divKeyPad.style.visibility = 'visible';
     divKeyPad.style.left = ((document.body.clientWidth - C.divKeyPadWidth) >> 1) + 'px';
     divKeyPad.style.top = '70px';
-    divGlassPanel.style.visibility = 'visible';
+    // divGlassPanel.style.visibility = 'visible';
 }
 
 function closeKeyPad() {
     divKeyPad.style.left = '0px';
     divKeyPad.style.top = '0px';
-    divKeyPad.style.visibility = 'hidden';
-    divGlassPanel.style.visibility = 'hidden';
+    // divKeyPad.style.visibility = 'hidden';
+    // divGlassPanel.style.visibility = 'hidden';
 }
 
 function fullScreen(b_fs) {
@@ -580,13 +598,13 @@ function uiBtnCallSetText(s_text) {
                 // btnCall.value = btnCall.innerHTML = bDisableCallBtnOptions ? 'Call' : 'Call <span id="spanCaret" class="caret">';
                 // btnCall.setAttribute("class", bDisableCallBtnOptions ? "btn btn-primary" : "btn btn-primary dropdown-toggle");
                 // btnCall.onclick = bDisableCallBtnOptions ? function () { sipCall(bDisableVideo ? 'call-audio' : 'call-audiovideo'); } : null;
-                ulCallOptions.style.visibility = bDisableCallBtnOptions ? "hidden" : "visible";
-                if (!bDisableCallBtnOptions && ulCallOptions.parentNode != divBtnCallGroup) {
-                    divBtnCallGroup.appendChild(ulCallOptions);
-                }
-                else if (bDisableCallBtnOptions && ulCallOptions.parentNode == divBtnCallGroup) {
-                    document.body.appendChild(ulCallOptions);
-                }
+                // ulCallOptions.style.visibility = bDisableCallBtnOptions ? "hidden" : "visible";
+                // if (!bDisableCallBtnOptions && ulCallOptions.parentNode != divBtnCallGroup) {
+                //     divBtnCallGroup.appendChild(ulCallOptions);
+                // }
+                // else if (bDisableCallBtnOptions && ulCallOptions.parentNode == divBtnCallGroup) {
+                //     document.body.appendChild(ulCallOptions);
+                // }
 
                 break;
             }
@@ -595,10 +613,10 @@ function uiBtnCallSetText(s_text) {
                 // btnCall.value = btnCall.innerHTML = s_text;
                 // btnCall.setAttribute("class", "btn btn-primary");
                 // btnCall.onclick = function () { sipCall(bDisableVideo ? 'call-audio' : 'call-audiovideo'); };
-                ulCallOptions.style.visibility = "hidden";
-                if (ulCallOptions.parentNode == divBtnCallGroup) {
-                    document.body.appendChild(ulCallOptions);
-                }
+                // ulCallOptions.style.visibility = "hidden";
+                // if (ulCallOptions.parentNode == divBtnCallGroup) {
+                //     document.body.appendChild(ulCallOptions);
+                // }
                 break;
             }
     }
@@ -655,7 +673,11 @@ function onSipEventStack(e /*SIPml.Stack.Event*/) {
                     oSipSessionRegister.register();
                 }
                 catch (e) {
-                    txtRegStatus.value = txtRegStatus.innerHTML = "<b>1:" + e + "</b>";
+                    smartVue.$message({
+                        message: "1:" + e,
+                        type: 'warning'
+                    })
+                    // txtRegStatus.value = txtRegStatus.innerHTML = "<b>1:" + e + "</b>";
                     btnRegister.disabled = false;
                 }
                 break;
@@ -676,7 +698,11 @@ function onSipEventStack(e /*SIPml.Stack.Event*/) {
                 divCallOptions.style.opacity = 0;
 
                 txtCallStatus.innerHTML = '';
-                txtRegStatus.innerHTML = bFailure ? "<i>Disconnected: <b>" + e.description + "</b></i>" : "<i>Disconnected</i>";
+                smartVue.$message({
+                    message: bFailure ? "Disconnected: " + e.description : "Disconnected",
+                    type: 'warning'
+                })
+                // txtRegStatus.innerHTML = bFailure ? "<i>Disconnected: <b>" + e.description + "</b></i>" : "<i>Disconnected</i>";
                 break;
             }
 
@@ -707,13 +733,13 @@ function onSipEventStack(e /*SIPml.Stack.Event*/) {
 
         case 'm_permission_requested':
             {
-                divGlassPanel.style.visibility = 'visible';
+                // divGlassPanel.style.visibility = 'visible';
                 break;
             }
         case 'm_permission_accepted':
         case 'm_permission_refused':
             {
-                divGlassPanel.style.visibility = 'hidden';
+                // divGlassPanel.style.visibility = 'hidden';
                 if (e.type == 'm_permission_refused') {
                     uiCallTerminated('Media stream permission denied');
                 }
@@ -734,7 +760,11 @@ function onSipEventSession(e /* SIPml.Session.Event */) {
                 var bConnected = (e.type == 'connected');
                 if (e.session == oSipSessionRegister) {
                     uiOnConnectionEvent(bConnected, !bConnected);
-                    txtRegStatus.innerHTML = "<i>" + e.description + "</i>";
+                    smartVue.$message({
+                        message: e.description,
+                        type: 'warning'
+                    })
+                    // txtRegStatus.innerHTML = "<i>" + e.description + "</i>";
                 }
                 else if (e.session == oSipSessionCall) {
                     btnHangUp.value = 'HangUp';
@@ -770,8 +800,11 @@ function onSipEventSession(e /* SIPml.Session.Event */) {
 
                     oSipSessionCall = null;
                     oSipSessionRegister = null;
-
-                    txtRegStatus.innerHTML = "<i>" + e.description + "</i>";
+                    smartVue.$message({
+                        message: e.description,
+                        type: 'warning'
+                    })
+                    // txtRegStatus.innerHTML = "<i>" + e.description + "</i>";
                 }
                 else if (e.session == oSipSessionCall) {
                     uiCallTerminated(e.description);
